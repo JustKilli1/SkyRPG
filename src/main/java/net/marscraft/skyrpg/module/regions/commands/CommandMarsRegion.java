@@ -1,0 +1,77 @@
+package net.marscraft.skyrpg.module.regions.commands;
+
+import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.regions.ModuleRegions;
+import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
+import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
+import net.marscraft.skyrpg.shared.Utils;
+import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
+import net.marscraft.skyrpg.shared.logmanager.ILogManager;
+import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
+import net.marscraft.skyrpg.shared.setups.ISetup;
+import net.marscraft.skyrpg.module.regions.setups.SetupMarsRegion;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class CommandMarsRegion implements CommandExecutor {
+
+
+    private final ILogManager logger;
+    private Main plugin;
+    private IConfigManager configManager;
+    private DBHandlerRegions dbHandler;
+    private DBAccessLayerRegions sql;
+
+
+    public CommandMarsRegion(ILogManager logger, Main plugin, IConfigManager configManager, DBAccessLayerRegions sql) {
+        this.logger = logger;
+        this.plugin = plugin;
+        this.configManager = configManager;
+        this.sql = sql;
+        dbHandler = new DBHandlerRegions(this.logger, this.sql);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if(!(sender instanceof Player)) return true;
+
+        Player player = (Player) sender;
+        MessageManager messageManager = new MessageManager(logger, configManager, player);
+
+        if(args.length == 0) {
+            showRegionOverview(player);
+            return true;
+        }
+
+        switch (args[0]) {
+            case "create":
+
+                if(args.length < 2) {
+                    messageManager.sendPlayerSyntaxError("mr create [RegionName]");
+                    return true;
+                }
+                String regionName = Utils.getStrFromArray(args, 1);
+                ISetup setup = new SetupMarsRegion(logger, messageManager, regionName, sql);
+                ModuleRegions.addSetup(player.getUniqueId(), setup);
+                setup.handleCommands(player, args);
+                break;
+            default:
+                messageManager.sendPlayerSyntaxError("mr help");
+                break;
+        }
+
+
+        return false;
+    }
+
+    /**
+     * Opens MarsRegions Inventory
+     * @param player Player who sees the Inventory
+     * */
+    private void showRegionOverview(Player player) {
+
+    }
+}

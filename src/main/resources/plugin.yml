@@ -1,0 +1,27 @@
+name: SkyRPG
+version: '${project.version}'
+main: net.marscraft.skyrpg.base.Main
+api-version: 1.18
+prefix: SkyRPG
+authors: [ JustKilli ]
+description: MarsCraft Skyblock/RPG Plugin
+website: marscraft.net
+
+commands:
+  test:
+    description: Test Command
+  marsregion:
+    description: MarsRegion Command
+    aliases:
+      - mr
+      - mregion
+  spawnCustomMob:
+    description: Spawn a Custom Mob
+    aliases:
+      - scm
+      - spawnMob
+  marsMobs:
+    description: MarsMobs Command
+    aliases:
+      - mm
+      - mmobs
