@@ -4,6 +4,7 @@ import net.marscraft.skyrpg.module.custommobs.loot.LootItem;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
@@ -15,12 +16,13 @@ public class MobHostile {
 
     private ILogManager logger;
     private String name;
-    private int id, level;
-    private double maxHealth, spawnChance;
+    private int id;
+    private double currentHealth, maxHealth, spawnChance;
     private EntityType type;
     private ItemStack mainItem;
     private ItemStack[] armor;
     private List<LootItem> loot;
+    private boolean active;
 
     public MobHostile(ILogManager logger, int id, String name) {
         this.logger = logger;
@@ -37,17 +39,17 @@ public class MobHostile {
         this.type = type;
     }
 
-    public MobHostile(ILogManager logger, String name, int id, int level, double maxHealth, double spawnChance, EntityType type, ItemStack mainItem, ItemStack[] armor, List<LootItem> loot) {
+    public MobHostile(ILogManager logger, String name, int id, double maxHealth, double spawnChance, EntityType type, ItemStack mainItem, ItemStack[] armor, List<LootItem> loot, boolean active) {
         this.logger = logger;
         this.name = name;
         this.id = id;
-        this.level = level;
         this.maxHealth = maxHealth;
         this.spawnChance = spawnChance;
         this.type = type;
         this.mainItem = mainItem;
         this.armor = armor;
         this.loot = loot;
+        this.active = active;
     }
 
     /**
@@ -79,6 +81,10 @@ public class MobHostile {
         return entity;
     }
 
+    /**
+     * Trys to drop Loot Items
+     * @param location Location where the items get dropped
+     */
     public void tryDropLoot(Location location) {
         for (LootItem item : loot) {
             item.tryDropItem(location);
@@ -89,16 +95,27 @@ public class MobHostile {
         if(id == 0) return false;
         if(name == null) return false;
         if(maxHealth == 0) return false;
+        if(spawnChance == 0) return false;
         return type != null;
 
     }
+
+    private Entity updateHealth(Entity entity) {
+        entity.setCustomName(buildCustomName(currentHealth));
+        return entity;
+    }
+
+    /**
+     * Builds CustomName with given health
+     * @param health Current Health from Mob
+     * @return Formatted CustomName
+     */
+    private String buildCustomName(double health) { return "§a" + name + " §r§c" + (int) health + "/" + (int) maxHealth + "❤"; }
+
     public int getId() { return id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
 
     public double getMaxHealth() { return maxHealth; }
     public void setMaxHealth(double maxHealth) { this.maxHealth = maxHealth; }
@@ -117,4 +134,21 @@ public class MobHostile {
 
     public ItemStack[] getArmor() { return armor; }
     public void setArmor(ItemStack[] armor) { this.armor = armor; }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public double getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public Entity setCurrentHealth(Entity entity, double currentHealth) {
+        this.currentHealth = currentHealth;
+        return updateHealth(entity);
+    }
 }

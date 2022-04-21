@@ -33,17 +33,17 @@ public class ListenerEntityDamage implements Listener {
         MobHostile mobHostile = dbHandler.getHostileMobById(mobId);
         if(mobHostile == null) return;
         if(rawEntity.isDead()) {
-            rawEntity.setCustomName("§a" + mobHostile.getName() + " §r§c0/" + (int) mobHostile.getMaxHealth() + "❤");
+            rawEntity = mobHostile.setCurrentHealth(rawEntity, 0);
+            mobHostile.tryDropLoot(rawEntity.getLocation());
+            return;
         }
         LivingEntity entity = (LivingEntity) rawEntity;
         double damage = event.getFinalDamage(), health = entity.getHealth() + entity.getAbsorptionAmount();
         if (health > damage) {
             health -= damage;
             health = Math.ceil(health);
-            rawEntity.setCustomName("§a" + mobHostile.getName() + " §r§c" + (int) Math.ceil(health) + "/" + (int) mobHostile.getMaxHealth() + "❤");
+            rawEntity = mobHostile.setCurrentHealth(rawEntity, health);
         }
-
-
     }
 
 }

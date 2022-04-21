@@ -55,7 +55,7 @@ public class DBHandlerCustomMobs extends DBHandler {
             EntityType entityType = EntityType.valueOf(rs.getString("EntityType"));
             double maxHealth = rs.getDouble("MaxHealth");
             double spawnChance = rs.getDouble("SpawnChance");
-            int level = rs.getInt("Level");
+            boolean active = rs.getBoolean("Active");
 
             ItemStack[] armor = new ItemStack[4];
             armor[0] = Utils.itemStackFromBase64(rs.getString("Helmet"));
@@ -66,7 +66,7 @@ public class DBHandlerCustomMobs extends DBHandler {
             ItemStack mainItem = Utils.itemStackFromBase64(rs.getString("MainItem"));
             List<LootItem> lootItems = getAllLootItemsByMobId(id);
 
-            return new MobHostile(logger, name, id, level, maxHealth, spawnChance, entityType, mainItem, armor, lootItems);
+            return new MobHostile(logger, name, id, maxHealth, spawnChance, entityType, mainItem, armor, lootItems, active);
         } catch (Exception ex) {
             logger.error(ex);
             return null;

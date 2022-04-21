@@ -24,12 +24,9 @@ public class MessagesCustomMobs extends MessageManager {
     public void sendMaxHealthSetMessage(double maxHealth) {
         sendCancelOptionReminder();
         sendPlayerMessage("Lebenspunkte auf &c" + maxHealth + " &agesetzt");
-        sendPlayerMessage("Bitte &cMobLevel &aeingeben");
+        sendPlayerMessage("Bitte &cSpawnChance &aeingeben");
     }
 
-    public void sendLevelSetMessage(int level) {
-        sendPlayerMessage("MobLevel auf &c" + level + " &agesetzt");
-    }
     public void sendCancelOptionReminder() {
         sendPlayerMessage("Gebe &ccancel &aein um die Erstellung abzubrechen");
     }
@@ -46,9 +43,12 @@ public class MessagesCustomMobs extends MessageManager {
     public void sendInvalidMaxHealthMessage(String userIn) {
         sendPlayerMessage("&c" + userIn + " &aist kein gültiger wert. Bitte eine &cpositive Kommazahl &aangeben");
     }
+    public void sendInvalidSpawnChanceMessage(String userIn) {
+        sendPlayerMessage("&c" + userIn + " &aist kein gültiger wert. Bitte eine Zahl zwischen 1 und 100 angeben");
+    }
 
-    public void sendInvalidLevelMessage(String userIn) {
-        sendPlayerMessage("&c" + userIn + " &aist kein gültiger wert. Bitte eine &cpositive Ganzzahl &aangeben");
+    public void sendSpawnChanceSetMessage(double spawnChance) {
+        sendPlayerMessage("SpawnChance auf &c" + spawnChance + " &agesetzt");
     }
 
 }

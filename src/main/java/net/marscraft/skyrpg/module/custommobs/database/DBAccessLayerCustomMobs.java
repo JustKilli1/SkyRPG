@@ -28,12 +28,12 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
                 "EntityType VARCHAR(100) NOT NULL," +
                 "MaxHealth DOUBLE NOT NULL," +
                 "SpawnChance DOUBLE NOT NULL," +
-                "Level INT," +
                 "Helmet LONGTEXT," +
                 "Chestplate LONGTEXT," +
                 "Leggings LONGTEXT," +
                 "Boots LONGTEXT," +
                 "MainItem LONGTEXT," +
+                "Active BOOLEAN," +
                 "PRIMARY KEY (ID)" +
                 ")";
         return executeSQLRequest(sqlQuery);
@@ -63,11 +63,17 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
 
     //SELECT Statements
 
+    /**
+     * Gets Last Mob from tabel CustomMobs
+     * */
     public ResultSet getLastMob() {
         String sqlQuery = "SELECT * FROM CustomMobs ORDER BY ID DESC LIMIT 1";
         return querySQLRequest(sqlQuery);
     }
 
+    /**
+     * Gets CustomMob by Id
+     * */
     public ResultSet getCustomMobById(int id) {
         String sqlQuery = "SELECT * FROM CustomMobs WHERE ID=" + id;
         return querySQLRequest(sqlQuery);
@@ -85,7 +91,9 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
     }
 
     //INSERT Statements
-
+    /**
+     * Inserts new CustomMob in table CustomMob
+     * */
     public boolean insertCustomMob(MobHostile mob) {
 
         Inventory inv = Bukkit.createInventory(null, 9, "Test");
@@ -98,19 +106,19 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
         String mainItem = Utils.itemStackToBase64(mob.getMainItem());
 
         String sqlQuery = "INSERT INTO CustomMobs" +
-                          "(ID, Name, EntityType, MaxHealth, SpawnChance, Level, Helmet, Chestplate, Leggings, Boots, MainItem)" +
+                          "(ID, Name, EntityType, MaxHealth, SpawnChance, Helmet, Chestplate, Leggings, Boots, MainItem, Active)" +
                           "VALUES ("
                           + mob.getId() + ", '"
                           + mob.getName() + "', '"
                           + mob.getType().toString() + "', "
                           + mob.getMaxHealth() + ", "
-                          + mob.getSpawnChance() + ", "
-                          + mob.getLevel() + ", '"
+                          + mob.getSpawnChance() + ", '"
                           + helmet + "', '"
                           + chestplate + "', '"
                           + leggings + "', '"
                           + boots + "', '"
-                          + mainItem + "'" +
+                          + mainItem + "', "
+                          + mob.isActive() + "" +
                           ")";
         return executeSQLRequest(sqlQuery);
     }

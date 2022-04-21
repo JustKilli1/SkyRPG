@@ -38,7 +38,7 @@ public class CommandMarsMob implements CommandExecutor {
         MessagesCustomMobs messages = new MessagesCustomMobs(logger, messagesConfig, player);
 
         if(args.length == 0) {
-            showMarsMobsOverviewInv(player);
+            //Overview opens
             return true;
         }
 
@@ -55,7 +55,6 @@ public class CommandMarsMob implements CommandExecutor {
                 ModuleCustomMobs.addSetup(player.getUniqueId(), setup);
                 break;
             case "edit":
-                showMarsMobsEditInv(player);
                 break;
             default:
                 messages.sendPlayerSyntaxError("mm [create, edit]");
@@ -63,25 +62,6 @@ public class CommandMarsMob implements CommandExecutor {
         }
 
         return false;
-    }
-
-    /**
-     * Opens MarsOverview Inventory
-     * @return true if success
-     * */
-    private boolean showMarsMobsOverviewInv(Player player) {
-
-        return true;
-    }
-
-
-    /**
-     * Opens MarsMobsCreate Inventory
-     * @return true if success
-     * */
-    private boolean showMarsMobsEditInv(Player player) {
-
-        return true;
     }
 
 }

@@ -25,29 +25,8 @@ public class ListenerInvClick implements Listener {
         EventStorage eventStorage = new EventStorage();
         eventStorage.setInventoryClickEvent(event);
         Player player = (Player) event.getWhoClicked();
-
-        if(ModuleCustomMobs.getSetups().containsKey(player.getUniqueId())) {
-            ISetup setup = ModuleCustomMobs.getSetups().get(player.getUniqueId());
-            setup.handleEvents(eventStorage);
-        }
-
-
-/*        Inventory eventInv = event.getClickedInventory();
-        IGuiInventory guiInv = getInventory(event.getView().getTitle());
-        if(guiInv == null) return;
-        EventStorage eventStorage = new EventStorage();
-        eventStorage.setInventoryClickEvent(event);
-        event.setCancelled(guiInv.clickEventCanceled());
-        guiInv.handleClickEvent(eventStorage);*/
+        if (!ModuleCustomMobs.getSetups().containsKey(player.getUniqueId())) return;
+        ISetup setup = ModuleCustomMobs.getSetups().get(player.getUniqueId());
+        setup.handleEvents(eventStorage);
     }
-
-
-/*    private IGuiInventory getInventory(String invTitle) {
-
-        InvCreateMob invCreateMob = new InvCreateMob(logger, messagesConfigManager);
-
-        if(invCreateMob.getTitle().equals(invTitle)) return invCreateMob;
-        else return null;
-    }*/
-
 }

@@ -19,7 +19,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         logger = new LogManager(this, "Main");
-        logger.info("§2Loading Configs...");
+        logger.info("Loading Configs...");
         loadConfigs();
         logger.info("Configs loaded.");
 
