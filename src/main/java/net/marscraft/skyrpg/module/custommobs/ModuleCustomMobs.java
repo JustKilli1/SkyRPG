@@ -11,6 +11,7 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerEntityDamage;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerInvClick;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerPlayerChat;
+import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
@@ -18,49 +19,63 @@ import net.marscraft.skyrpg.shared.logmanager.LogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.plugin.PluginManager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import static net.marscraft.skyrpg.module.ModuleMode.*;
 import static net.marscraft.skyrpg.module.ModuleMode.DEBUG;
 import static net.marscraft.skyrpg.module.ModuleMode.MAINTENANCE;
 import static net.marscraft.skyrpg.module.ModuleState.*;
 
 public class ModuleCustomMobs implements IModule {
 
-    public static final String moduleName = "CustomMobs";
-    public static final String moduleDescription = "Creates unique Mobs";
+    private static final String moduleName = "CustomMobs";
+    private static final String moduleDescription = "Creates unique Mobs";
     private static Map<UUID, ISetup> setups = new HashMap<>();
     private final ILogManager logger;
+    private static List<IModule> requiredModules = new ArrayList<>();
     private ModuleState moduleState;
     private ModuleMode moduleMode;
     private Main plugin;
     private DBAccessLayerCustomMobs sql;
     private DBHandlerCustomMobs dbHandler;
-    private IConfigManager messagesConfigManager;
+    private IConfigManager messagesConfig, mysqlConfig;
 
-    public ModuleCustomMobs(Main plugin, IConfigManager mysqlConfig, IConfigManager messagesConfigManager) {
+    public ModuleCustomMobs(Main plugin, IConfigManager mysqlConfig, IConfigManager messagesConfig, List<IModule> requiredModules) {
         this.plugin = plugin;
         logger = new LogManager(this.plugin, moduleName);
         this.sql = new DBAccessLayerCustomMobs(logger, mysqlConfig);
+        this.mysqlConfig = mysqlConfig;
         dbHandler = new DBHandlerCustomMobs(logger, this.sql);
-        this.messagesConfigManager = messagesConfigManager;
+        this.messagesConfig = messagesConfig;
+        this.requiredModules = requiredModules;
 
         onModuleEnable();
     }
 
-    public ModuleCustomMobs(Main plugin, ModuleMode moduleMode, IConfigManager mysqlConfig, IConfigManager messagesConfigManager) {
+    public ModuleCustomMobs(Main plugin, ModuleMode moduleMode, IConfigManager mysqlConfig, IConfigManager messagesConfig, List<IModule> requiredModules) {
         this.plugin = plugin;
         logger = new LogManager(this.plugin, moduleName);
         this.sql = new DBAccessLayerCustomMobs(logger, mysqlConfig);
-        this.messagesConfigManager = messagesConfigManager;
-
+        this.mysqlConfig = mysqlConfig;
+        this.messagesConfig = messagesConfig;
+        this.requiredModules = requiredModules;
 
         updateModuleMode(moduleMode);
         onModuleEnable();
     }
 
+    private boolean requiredModulesActive() {
 
+        for(IModule module : requiredModules) {
+            if(module.getModuleMode() != LIVE) logger.warn("Required Module " + module.getModuleName() + " is not Live");
+            if(module.getModuleState() != ACTIVE) {
+                logger.error("Could not load Required Module " + module.getModuleName() + ". Module shutdown");
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     @Override
     public void onModuleEnable() {
@@ -75,6 +90,9 @@ public class ModuleCustomMobs implements IModule {
         }
 
         logger.info("Loading Module: CustomMobs");
+        logger.info("Checking if required Modules are active...");
+        if(!requiredModulesActive()) return;
+        logger.info("All required modules Active");
         logger.info("Creating required Databases...");
         if(!createDatabaseTables()) logger.error("Could not create required databases");
         logger.info("All Databases created.");
@@ -95,12 +113,12 @@ public class ModuleCustomMobs implements IModule {
     private void registerListener() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(new ListenerEntityDamage(logger, dbHandler), plugin);
-        pluginManager.registerEvents(new ListenerInvClick(logger, messagesConfigManager), plugin);
-        pluginManager.registerEvents(new ListenerPlayerChat(logger, messagesConfigManager), plugin);
+        pluginManager.registerEvents(new ListenerInvClick(logger, messagesConfig), plugin);
+        pluginManager.registerEvents(new ListenerPlayerChat(logger, messagesConfig), plugin);
     }
     private void registerCommands() {
-        plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfigManager));
-        plugin.getCommand("marsMobs").setExecutor(new CommandMarsMob(logger, sql, dbHandler, messagesConfigManager));
+        plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfig));
+        plugin.getCommand("marsMobs").setExecutor(new CommandMarsMob(logger, sql, dbHandler, messagesConfig));
     }
 
     @Override
@@ -142,6 +160,16 @@ public class ModuleCustomMobs implements IModule {
 
     @Override
     public void updateModuleMode(ModuleMode moduleMode) { this.moduleMode = moduleMode; }
+
+    @Override
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    @Override
+    public String getModuleDescription() {
+        return moduleDescription;
+    }
 
     public static Map<UUID, ISetup> getSetups() { return setups; }
     public static void setSetups(Map<UUID, ISetup> setups) { ModuleCustomMobs.setups = setups; }

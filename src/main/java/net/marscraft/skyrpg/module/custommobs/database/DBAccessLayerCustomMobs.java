@@ -79,6 +79,11 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
         return querySQLRequest(sqlQuery);
     }
 
+    public ResultSet getCustomMobByState(boolean active) {
+        String sqlQuery = "SELECT * FROM CustomMobs WHERE Active=" + active;
+        return querySQLRequest(sqlQuery);
+    }
+
     /**
      * Gets All LootItems with CustomMobId
      * <p>Table View:</p>
@@ -122,6 +127,5 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
                           ")";
         return executeSQLRequest(sqlQuery);
     }
-
 
 }

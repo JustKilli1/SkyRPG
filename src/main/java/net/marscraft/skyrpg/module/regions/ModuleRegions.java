@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.marscraft.skyrpg.module.ModuleMode.DEBUG;
-import static net.marscraft.skyrpg.module.ModuleMode.MAINTENANCE;
+import static net.marscraft.skyrpg.module.ModuleMode.*;
 import static net.marscraft.skyrpg.module.ModuleState.*;
 import static net.marscraft.skyrpg.module.ModuleState.ACTIVE;
 
 public class ModuleRegions implements IModule {
-    public static final String moduleName = "Regions";
-    public static final String moduleDescription = "Creates Region between two locations";
+    private static final String moduleName = "Regions";
+    private static final String moduleDescription = "Creates Region between two locations";
     private static Map<UUID, ISetup> setups = new HashMap<>();
     private final ILogManager logger;
     private ModuleState moduleState;
@@ -80,6 +79,7 @@ public class ModuleRegions implements IModule {
         logger.info("§aModule CustomMobs loaded Successfully");
         //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
+        updateModuleMode(LIVE);
     }
 
     private boolean createDatabaseTables() {
@@ -134,6 +134,16 @@ public class ModuleRegions implements IModule {
 
     @Override
     public void updateModuleMode(ModuleMode moduleMode) { this.moduleMode = moduleMode; }
+
+    @Override
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    @Override
+    public String getModuleDescription() {
+        return moduleDescription;
+    }
 
 
     public static Map<UUID, ISetup> getSetups() { return setups; }

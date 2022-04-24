@@ -10,6 +10,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public final class Main extends JavaPlugin {
 
     private LogManager logger;
@@ -63,8 +66,9 @@ public final class Main extends JavaPlugin {
 
     private boolean loadModules() {
 
-        ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig);
         ModuleRegions moduleRegions = new ModuleRegions(this, mysqlConfig, messageConfig);
+        ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig, Arrays.asList(moduleRegions));
+
         return true;
     }
 

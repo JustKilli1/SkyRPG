@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SetupCustomMob implements ISetup {
+public class SetupCreateCustomMob implements ISetup {
 
     private static Map<UUID, MobHostile> setupMobs = new HashMap<>();
     private final ILogManager logger;
@@ -30,7 +30,7 @@ public class SetupCustomMob implements ISetup {
     private int mobId;
     private MessagesCustomMobs messages;
 
-    public SetupCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
+    public SetupCreateCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
         this.logger = logger;
         this.messages = messages;
         this.mobName = mobName;

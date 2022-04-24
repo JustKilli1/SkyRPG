@@ -7,10 +7,10 @@ import net.marscraft.skyrpg.shared.database.DBHandler;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class DBHandlerCustomMobs extends DBHandler {
     /**
      * Gets Last Id from CustomMobs Table
      * */
-    public int getLastMobId() {
+    public @NotNull int getLastMobId() {
         ResultSet rs = sql.getLastMob();
         if(rs == null) return 0;
 
@@ -46,11 +46,46 @@ public class DBHandlerCustomMobs extends DBHandler {
      * */
     public @Nullable MobHostile getHostileMobById(int id) {
         ResultSet rs = sql.getCustomMobById(id);
-
-        if (rs == null) return null;
         try {
+            if (rs == null) return null;
             if (!rs.next()) return null;
+            MobHostile hostileMob = getHostileMob(rs);
+            return hostileMob;
+        } catch (Exception ex) {
+            logger.error(ex);
+            return null;
+        }
+    }
 
+    public @NotNull List<MobHostile> getAllHostileMobs() {
+        List<MobHostile> hostileMobs = new ArrayList<>();
+        int lastMobId = getLastMobId();
+        for(int i = 1; i <= lastMobId; i++) {
+            MobHostile hostileMob = getHostileMobById(i);
+            hostileMobs.add(hostileMob);
+        }
+        return hostileMobs;
+    }
+
+    public @Nullable List<MobHostile> getAllHostileMobs(boolean active) {
+        List<MobHostile> hostileMobs = new ArrayList<>();
+        ResultSet rs = sql.getCustomMobByState(active);
+        try {
+            if (rs == null) return null;
+            while(rs.next()) {
+                MobHostile hostileMob = getHostileMob(rs);
+                hostileMobs.add(hostileMob);
+            }
+            return hostileMobs;
+        } catch (Exception ex) {
+            logger.error(ex);
+            return null;
+        }
+    }
+
+    private @Nullable MobHostile getHostileMob(ResultSet rs) {
+        try {
+            int id = rs.getInt("ID");
             String name = rs.getString("Name");
             EntityType entityType = EntityType.valueOf(rs.getString("EntityType"));
             double maxHealth = rs.getDouble("MaxHealth");

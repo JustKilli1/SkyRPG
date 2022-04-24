@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.shared;
 
+import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,7 +59,8 @@ public class Utils {
      * @param iStackAsStr ItemStack as String that gets Converted to ItemStack
      * @return ItemStack from String
      * */
-    public static ItemStack itemStackFromBase64(String iStackAsStr){
+    public static @Nullable ItemStack itemStackFromBase64(@Nullable String iStackAsStr){
+        if(iStackAsStr == null || iStackAsStr.equalsIgnoreCase("null") || iStackAsStr.length() % 4 != 0) return null;
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(iStackAsStr));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);

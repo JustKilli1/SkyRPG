@@ -1,9 +1,6 @@
 package net.marscraft.skyrpg.module.custommobs.commands;
 
-import com.sun.tools.javac.util.List;
 import net.marscraft.skyrpg.base.Main;
-import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
