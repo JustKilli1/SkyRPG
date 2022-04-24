@@ -33,6 +33,8 @@ public class SetupEditCustomMob implements ISetup {
         InventoryClickEvent event = eventStorage.getInventoryClickEvent();
         Player player = (Player) event.getWhoClicked();
         ItemStack clickedItem = event.getCurrentItem();
+        IGuiInventory inv = getInventory(event.getView().getTitle(), false);
+        if(inv == null) return false;
 
         NamespacedKey keyFilterName = new NamespacedKey(Main.getPlugin(Main.class), "filterName");
         if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyFilterName, PersistentDataType.STRING)) {
@@ -44,7 +46,6 @@ public class SetupEditCustomMob implements ISetup {
             event.setCancelled(true);
             return true;
         }
-
         event.setCancelled(true);
         return false;
     }
