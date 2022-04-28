@@ -5,9 +5,6 @@ import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.database.DBAccessLayer;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
@@ -26,7 +23,7 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
                 "ID INT NOT NULL, " +
                 "Name VARCHAR(50) NOT NULL," +
                 "EntityType VARCHAR(100) NOT NULL," +
-                "MaxHealth DOUBLE NOT NULL," +
+                "BaseHealth DOUBLE NOT NULL," +
                 "SpawnChance DOUBLE NOT NULL," +
                 "Helmet LONGTEXT," +
                 "Chestplate LONGTEXT," +
@@ -91,7 +88,9 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
      * <p>Field: ID, MobId, LootItemId, ID, Item, DropChance, AmountMin, AmountMax</p>
      * */
     public ResultSet getLootItemsByMobId(int id) {
-        String sqlQuery = "SELECT * FROM MobLootController, LootItems WHERE MobLootController.MobId=" + id + " AND MobLootController.LootItemId=LootItems.ID";
+        String sqlQuery = "SELECT * FROM MobLootController, LootItems " +
+                          "WHERE MobLootController.MobId=" + id + " " +
+                          "AND MobLootController.LootItemId=LootItems.ID";
         return querySQLRequest(sqlQuery);
     }
 
@@ -101,7 +100,6 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
      * */
     public boolean insertCustomMob(MobHostile mob) {
 
-        Inventory inv = Bukkit.createInventory(null, 9, "Test");
         ItemStack[] armor = mob.getArmor();
 
         String helmet = armor == null ? null : Utils.itemStackToBase64(armor[0]);
@@ -111,12 +109,12 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
         String mainItem = Utils.itemStackToBase64(mob.getMainItem());
 
         String sqlQuery = "INSERT INTO CustomMobs" +
-                          "(ID, Name, EntityType, MaxHealth, SpawnChance, Helmet, Chestplate, Leggings, Boots, MainItem, Active)" +
+                          "(ID, Name, EntityType, BaseHealth, SpawnChance, Helmet, Chestplate, Leggings, Boots, MainItem, Active)" +
                           "VALUES ("
                           + mob.getId() + ", '"
                           + mob.getName() + "', '"
                           + mob.getType().toString() + "', "
-                          + mob.getMaxHealth() + ", "
+                          + mob.getBaseHealth() + ", "
                           + mob.getSpawnChance() + ", '"
                           + helmet + "', '"
                           + chestplate + "', '"
@@ -125,6 +123,50 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
                           + mainItem + "', "
                           + mob.isActive() + "" +
                           ")";
+        return executeSQLRequest(sqlQuery);
+    }
+
+    //UPDATE Statements
+
+    public boolean updateCustomMobName(int mobId, String newName) {
+        return updateCustomMobField(mobId, "Name", newName);
+    }
+
+    public boolean updateCustomMobType(int mobId, String newType) {
+        return updateCustomMobField(mobId, "EntityType", newType);
+    }
+
+    public boolean updateCustomMobBaseHealth(int mobId, double newBaseHealth) {
+        return updateCustomMobField(mobId, "BaseHealth", newBaseHealth);
+    }
+    public boolean updateCustomMobSpawnChance(int mobId, double newSpawnChance) {
+        return updateCustomMobField(mobId, "SpawnChance", newSpawnChance);
+    }
+    public boolean updateCustomMobActive(int mobId, boolean active) {
+        return updateCustomMobField(mobId, "Active", active);
+    }
+
+    private boolean updateCustomMobField(int mobId, String fieldName, String value) {
+        String sqlQuery = "UPDATE CustomMobs " +
+                          "SET " + fieldName + "='" + value + "' " +
+                          "WHERE ID=" + mobId
+                          ;
+        return executeSQLRequest(sqlQuery);
+    }
+
+    private boolean updateCustomMobField(int mobId, String fieldName, double value) {
+        String sqlQuery = "UPDATE CustomMobs " +
+                "SET " + fieldName + "=" + value + " " +
+                "WHERE ID=" + mobId
+                ;
+        return executeSQLRequest(sqlQuery);
+    }
+
+    private boolean updateCustomMobField(int mobId, String fieldName, boolean value) {
+        String sqlQuery = "UPDATE CustomMobs " +
+                "SET " + fieldName + "=" + value + " " +
+                "WHERE ID=" + mobId
+                ;
         return executeSQLRequest(sqlQuery);
     }
 

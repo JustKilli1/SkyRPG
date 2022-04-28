@@ -64,9 +64,12 @@ public class InvCreateMob extends MarsInventory implements IGuiInventory {
             logger.warn("InventoryClickEvent is null. Class: InvCreateMob, Method: handleClickEvent");
             return;
         }
+        Player player = (Player) event.getWhoClicked();
+        player.sendMessage("geklickt");
         event.setCancelled(true);
         if(event.getClick() == ClickType.LEFT) {
-            Player player = (Player) event.getWhoClicked();
+
+
             ItemStack clickedItem = event.getCurrentItem();
             if(clickedItem == null) return;
             if (clickedItem.getItemMeta().getDisplayName().length() < 1) return;

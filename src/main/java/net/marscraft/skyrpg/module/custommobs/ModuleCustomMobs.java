@@ -11,7 +11,6 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerEntityDamage;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerInvClick;
 import net.marscraft.skyrpg.module.custommobs.listeners.ListenerPlayerChat;
-import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
@@ -113,7 +112,7 @@ public class ModuleCustomMobs implements IModule {
     private void registerListener() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(new ListenerEntityDamage(logger, dbHandler), plugin);
-        pluginManager.registerEvents(new ListenerInvClick(logger, messagesConfig), plugin);
+        pluginManager.registerEvents(new ListenerInvClick(logger, messagesConfig, dbHandler, sql), plugin);
         pluginManager.registerEvents(new ListenerPlayerChat(logger, messagesConfig), plugin);
     }
     private void registerCommands() {

@@ -51,4 +51,14 @@ public class MessagesCustomMobs extends MessageManager {
         sendPlayerMessage("SpawnChance auf &c" + spawnChance + " &agesetzt");
     }
 
+    public void sendEnterNewNameMessage() {
+        sendPlayerMessage("Bitte gebe den neuen Namen im Chat ein");
+    }
+
+    public void sendNameSetMessage(String newName) {
+        sendPlayerMessage("Name wurde auf &c" + newName + " &ageändert.");
+    }
+    public void sendTypeSetMessage(String newType) {
+        sendPlayerMessage("MobType wurde auf &c" + newType + " &ageändert.");
+    }
 }

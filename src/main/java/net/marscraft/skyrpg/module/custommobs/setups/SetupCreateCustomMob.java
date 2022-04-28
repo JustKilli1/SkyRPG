@@ -120,13 +120,13 @@ public class SetupCreateCustomMob implements ISetup {
             return true;
         }
         // Does things when maxHealth is not set
-        if(hostileMob.getMaxHealth() <= 0) {
+        if(hostileMob.getBaseHealth() <= 0) {
             double maxHealth = Utils.doubleFromStr(message);
             if(maxHealth <= 0) {
                 messages.sendInvalidMaxHealthMessage(message);
                 return false;
             }
-            hostileMob.setMaxHealth(maxHealth);
+            hostileMob.setBaseHealth(maxHealth);
             messages.sendMaxHealthSetMessage(maxHealth);
 
             return true;

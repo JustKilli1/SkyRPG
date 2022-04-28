@@ -17,7 +17,7 @@ public class MobHostile {
     private ILogManager logger;
     private String name;
     private int id;
-    private double currentHealth, maxHealth, spawnChance;
+    private double currentHealth, baseHealth, spawnChance;
     private EntityType type;
     private ItemStack mainItem;
     private ItemStack[] armor;
@@ -30,20 +30,20 @@ public class MobHostile {
         this.name = name;
     }
 
-    public MobHostile(ILogManager logger, String name, int id, double maxHealth, double spawnChance, EntityType type) {
+    public MobHostile(ILogManager logger, String name, int id, double baseHealth, double spawnChance, EntityType type) {
         this.logger = logger;
         this.name = name;
         this.id = id;
-        this.maxHealth = maxHealth;
+        this.baseHealth = baseHealth;
         this.spawnChance = spawnChance;
         this.type = type;
     }
 
-    public MobHostile(ILogManager logger, String name, int id, double maxHealth, double spawnChance, EntityType type, ItemStack mainItem, ItemStack[] armor, List<LootItem> loot, boolean active) {
+    public MobHostile(ILogManager logger, String name, int id, double baseHealth, double spawnChance, EntityType type, ItemStack mainItem, ItemStack[] armor, List<LootItem> loot, boolean active) {
         this.logger = logger;
         this.name = name;
         this.id = id;
-        this.maxHealth = maxHealth;
+        this.baseHealth = baseHealth;
         this.spawnChance = spawnChance;
         this.type = type;
         this.mainItem = mainItem;
@@ -64,11 +64,11 @@ public class MobHostile {
 
         //entity.setVisualFire(true);
         entity.setCustomNameVisible(true);
-        entity.setCustomName("§a" + name + " §r§c" + (int) maxHealth + "/" + (int) maxHealth + "❤");
+        entity.setCustomName("§a" + name + " §r§c" + (int) baseHealth + "/" + (int) baseHealth + "❤");
         entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.5);
-        entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+        entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(baseHealth);
         entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
-        entity.setHealth(maxHealth);
+        entity.setHealth(baseHealth);
         EntityEquipment inv = entity.getEquipment();
         if (armor != null) inv.setArmorContents(armor);
         inv.setHelmetDropChance(0f);
@@ -94,7 +94,7 @@ public class MobHostile {
     public boolean setupComplete() {
         if(id == 0) return false;
         if(name == null) return false;
-        if(maxHealth == 0) return false;
+        if(baseHealth == 0) return false;
         if(spawnChance == 0) return false;
         return type != null;
 
@@ -110,15 +110,15 @@ public class MobHostile {
      * @param health Current Health from Mob
      * @return Formatted CustomName
      */
-    private String buildCustomName(double health) { return "§a" + name + " §r§c" + (int) health + "/" + (int) maxHealth + "❤"; }
+    private String buildCustomName(double health) { return "§a" + name + " §r§c" + (int) health + "/" + (int) baseHealth + "❤"; }
 
     public int getId() { return id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public double getMaxHealth() { return maxHealth; }
-    public void setMaxHealth(double maxHealth) { this.maxHealth = maxHealth; }
+    public double getBaseHealth() { return baseHealth; }
+    public void setBaseHealth(double baseHealth) { this.baseHealth = baseHealth; }
 
     public void setSpawnChance(double spawnChance) { this.spawnChance = spawnChance; }
     public double getSpawnChance() { return spawnChance; }

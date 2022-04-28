@@ -4,10 +4,12 @@ import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
+import net.marscraft.skyrpg.module.custommobs.inventory.editinventory.InvEditOverview;
 import net.marscraft.skyrpg.module.custommobs.setups.SetupCreateCustomMob;
 import net.marscraft.skyrpg.module.custommobs.setups.SetupEditCustomMob;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
+import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.command.Command;
@@ -59,9 +61,9 @@ public class CommandMarsMob implements CommandExecutor {
                 ModuleCustomMobs.addSetup(uuid, setupCreate);
                 break;
             case "edit":
-                ISetup setupEdit = new SetupEditCustomMob(logger, messages, dbHandler);
-                setupEdit.handleCommands(player, args);
-                ModuleCustomMobs.addSetup(uuid, setupEdit);
+                IGuiInventory editInv = new InvEditOverview(logger, messages, dbHandler, false);
+                editInv.open(player);
+
                 break;
             default:
                 messages.sendPlayerSyntaxError("mm [create, edit]");
