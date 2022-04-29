@@ -41,6 +41,7 @@ public class InvFunctionShowMobOverview extends InvFunction {
         for(int i = startPos + 9; i <= endPos; i++) {
             if(hostileMobIndex == hostileMobs.size()) break;
             MobHostile hostileMob = hostileMobs.get(hostileMobIndex);
+            if(hostileMob == null) continue;
             ItemStack displayItem = getCustomMobDisplayItem(hostileMob.getType().toString(), hostileMob.getName(), hostileMob.getId(), hostileMob.getBaseHealth(), hostileMob.getSpawnChance());
             invContents[i] = displayItem;
             hostileMobIndex++;

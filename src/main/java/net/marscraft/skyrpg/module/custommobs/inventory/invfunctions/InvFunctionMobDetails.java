@@ -28,12 +28,25 @@ public class InvFunctionMobDetails extends InvFunction {
         int startIndex = getStartIndex(startRow);
         ItemStack[] invContents = inv.getContents();
         NamespacedKey keyDetailItem = new NamespacedKey(Main.getPlugin(Main.class), "detailItem");
+        NamespacedKey keyStateItem = new NamespacedKey(Main.getPlugin(Main.class), "state");
 
         ItemStack mobItem = new ItemBuilder(getCustomMobDisplayItem(hostileMob.getType().toString(), hostileMob.getName(), hostileMob.getId(), hostileMob.getBaseHealth(), hostileMob.getSpawnChance()))
                                 .addPersistantDataToItemStack(keyDetailItem, "mobType")
                                 .build()
                                 ;
+        Material stateMat = hostileMob.isActive() ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
+        String stateDisplayName = hostileMob.isActive() ? "§aActive" : "§cInactive";
+        String state = hostileMob.isActive() ? "Active" : "Inactive";
+        ItemStack changeState = new ItemBuilder(stateMat)
+                                .setDisplayname(stateDisplayName)
+                                .setLore("§aChange Mob State")
+                                .addPersistantDataToItemStack(keyDetailItem, "state")
+                                .addPersistantDataToItemStack(keyStateItem, state)
+                                .build()
+                                ;
+
         invContents[startIndex] = mobItem;
+        invContents[startIndex + 8] = changeState;
 
         List<ItemStack> detailItems = buildDetailItems();
         int listCounter = 0;

@@ -145,6 +145,22 @@ public class DBAccessLayerCustomMobs extends DBAccessLayer {
     public boolean updateCustomMobActive(int mobId, boolean active) {
         return updateCustomMobField(mobId, "Active", active);
     }
+    public boolean updateCustomMobArmor(int mobId, ItemStack[] armor) {
+        String helmetStr = Utils.itemStackToBase64(armor[0]);
+        String chestplateStr = Utils.itemStackToBase64(armor[1]);
+        String leggingsStr = Utils.itemStackToBase64(armor[2]);
+        String bootsStr = Utils.itemStackToBase64(armor[3]);
+
+        if(!updateCustomMobField(mobId, "Helmet", helmetStr)) return false;
+        if(!updateCustomMobField(mobId, "Chestplate", chestplateStr)) return false;
+        if(!updateCustomMobField(mobId, "Leggings", leggingsStr)) return false;
+        return updateCustomMobField(mobId, "Boots", bootsStr);
+    }
+
+    public boolean updateCustomMobMainItem(int mobId, ItemStack mainItem) {
+        String mainItemStr = Utils.itemStackToBase64(mainItem);
+        return updateCustomMobField(mobId, "MainItem", mainItemStr);
+    }
 
     private boolean updateCustomMobField(int mobId, String fieldName, String value) {
         String sqlQuery = "UPDATE CustomMobs " +

@@ -8,10 +8,7 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
 import net.marscraft.skyrpg.module.custommobs.inventory.invfunctions.InvFunctionMobDetails;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
-import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobEntityType;
-import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobHealth;
-import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobName;
-import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobSpawnChance;
+import net.marscraft.skyrpg.module.custommobs.setups.*;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.inventory.MarsInventory;
@@ -140,6 +137,22 @@ public class InvEditMobDetails extends MarsInventory implements IGuiInventory {
                     ISetup spawnChanceSetup = new SetupCustomMobSpawnChance(logger, dbHandler, sql, messages, mobId);
                     spawnChanceSetup.handleCommands(player);
                     ModuleCustomMobs.addSetup(player.getUniqueId(), spawnChanceSetup);
+                    break;
+                case "items":
+                    invFunctionGoBack.addGuiInventory(this);
+                    ISetup itemsSetup = new SetupCustomMobItems(logger, dbHandler, sql, messages, mobId);
+                    itemsSetup.handleCommands(player);
+                    ModuleCustomMobs.addSetup(player.getUniqueId(), itemsSetup);
+                    break;
+                case "state":
+                    NamespacedKey keyStateItem = new NamespacedKey(Main.getPlugin(Main.class), "state");
+                    if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyStateItem, PersistentDataType.STRING)) {
+                        boolean active = clickedItem.getItemMeta().getPersistentDataContainer().get(keyStateItem, PersistentDataType.STRING).equalsIgnoreCase("Active") ? true : false;
+                        hostileMob.setActive(active);
+                        sql.updateCustomMobActive(mobId, active);
+                        open(player);
+                        return;
+                    }
                     break;
                 default:
                     break;

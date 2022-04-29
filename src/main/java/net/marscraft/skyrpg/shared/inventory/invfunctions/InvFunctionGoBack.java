@@ -28,6 +28,8 @@ public class InvFunctionGoBack extends InvFunction{
         int startIndex = (row * 9) - 9;
         ItemStack[] invContents = inv.getContents();
         if(invContents.length <= startIndex) {
+            logger.error("Länge: " + invContents.length);
+            logger.error("StartIndex: " + startIndex);
             logger.error("Could not add back function to Inventory");
             return null;
         }

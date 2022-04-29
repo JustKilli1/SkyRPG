@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.base;
 
+import net.marscraft.skyrpg.commands.CommandTest;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.configmanager.ConfigManager;
@@ -56,6 +57,7 @@ public final class Main extends JavaPlugin {
     }
     private void registerCommands() {
         //getCommand("mcquest").setExecutor(new MCQuestCommand(logger, sql, messageConfig, this));
+        getCommand("test").setExecutor(new CommandTest());
 
     }
 
