@@ -23,7 +23,7 @@ import java.util.List;
 
 public class InvCreateMob extends MarsInventory implements IGuiInventory {
 
-    private final String title = "MobType auswählen";
+    public final static String title = "MobType auswählen";
     private ILogManager logger;
     private MessagesCustomMobs messages;
     private MobHostile mob;
@@ -57,12 +57,12 @@ public class InvCreateMob extends MarsInventory implements IGuiInventory {
     }
 
     @Override
-    public void handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         InventoryClickEvent event = eventStorage.getInventoryClickEvent();
         if(event == null) {
             logger.warn("InventoryClickEvent is null. Class: InvCreateMob, Method: handleClickEvent");
-            return;
+            return null;
         }
         Player player = (Player) event.getWhoClicked();
         player.sendMessage("geklickt");
@@ -71,17 +71,19 @@ public class InvCreateMob extends MarsInventory implements IGuiInventory {
 
 
             ItemStack clickedItem = event.getCurrentItem();
-            if(clickedItem == null) return;
-            if (clickedItem.getItemMeta().getDisplayName().length() < 1) return;
+            if(clickedItem == null) return null;
+            if (clickedItem.getItemMeta().getDisplayName().length() < 1) return null;
             NamespacedKey keyMobType = new NamespacedKey(Main.getPlugin(Main.class), "mobType");
-            if (!clickedItem.getItemMeta().getPersistentDataContainer().has(keyMobType, PersistentDataType.STRING)) return;
+            if (!clickedItem.getItemMeta().getPersistentDataContainer().has(keyMobType, PersistentDataType.STRING)) return null;
             String mobType = clickedItem.getItemMeta().getPersistentDataContainer().get(keyMobType, PersistentDataType.STRING).toUpperCase();
             EntityType type = EntityType.valueOf(mobType);
             mob.setType(type);
             player.closeInventory();
             messages.sendMobTypeSetMessage();
+            messages.sendEnterBaseHealthMessage();
+            return (T) mob;
         }
-
+        return null;
     }
 
     @Override

@@ -8,7 +8,10 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
 import net.marscraft.skyrpg.module.custommobs.inventory.invfunctions.InvFunctionMobDetails;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
+import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobEntityType;
+import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobHealth;
 import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobName;
+import net.marscraft.skyrpg.module.custommobs.setups.SetupCustomMobSpawnChance;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.inventory.MarsInventory;
@@ -74,10 +77,10 @@ public class InvEditMobDetails extends MarsInventory implements IGuiInventory {
     }
 
     @Override
-    public void handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
         InventoryClickEvent invClickEvent = eventStorage.getInventoryClickEvent();
         if(invClickEvent != null) handleInventoryClickEvent(eventStorage, invClickEvent);
-
+        return null;
     }
 
     @Override
@@ -118,16 +121,25 @@ public class InvEditMobDetails extends MarsInventory implements IGuiInventory {
         if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyDetailItem, PersistentDataType.STRING)) {
             String detailItemName = clickedItem.getItemMeta().getPersistentDataContainer().get(keyDetailItem, PersistentDataType.STRING);
             switch (detailItemName.toLowerCase()) {
+                case "mobtype":
+                    ISetup mobTypeSetup = new SetupCustomMobEntityType(logger, dbHandler, sql, messages, hostileMob);
+                    mobTypeSetup.handleCommands(player);
+                    ModuleCustomMobs.addSetup(player.getUniqueId(), mobTypeSetup);
+                    break;
                 case "name":
                     ISetup nameSetup = new SetupCustomMobName(logger, dbHandler, sql, messages, mobId);
+                    nameSetup.handleCommands(player);
                     ModuleCustomMobs.addSetup(player.getUniqueId(), nameSetup);
-                    messages.sendEnterNewNameMessage();
-                    player.closeInventory();
                     break;
-                case "mobtype":
-                    IGuiInventory inv = new InvCreateMob(logger, messages, hostileMob);
-                    inv.open(player);
-                    player.sendMessage("Test2");
+                case "basehealth":
+                    ISetup baseHealthSetup = new SetupCustomMobHealth(logger, dbHandler, sql, messages, mobId);
+                    baseHealthSetup.handleCommands(player);
+                    ModuleCustomMobs.addSetup(player.getUniqueId(), baseHealthSetup);
+                    break;
+                case "spawnchance":
+                    ISetup spawnChanceSetup = new SetupCustomMobSpawnChance(logger, dbHandler, sql, messages, mobId);
+                    spawnChanceSetup.handleCommands(player);
+                    ModuleCustomMobs.addSetup(player.getUniqueId(), spawnChanceSetup);
                     break;
                 default:
                     break;

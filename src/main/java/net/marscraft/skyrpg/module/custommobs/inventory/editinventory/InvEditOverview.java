@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class InvEditOverview extends MarsInventory implements IGuiInventory {
 
-    public static final String title = "MobType auswählen";
+    public static final String title = "Mob auswählen";
     private static Map<UUID, InvFunctionGoBack> previousInvs = new HashMap<>();
     private final ILogManager logger;
     private MessagesCustomMobs messages;
@@ -62,10 +62,10 @@ public class InvEditOverview extends MarsInventory implements IGuiInventory {
     }
 
     @Override
-    public void handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
         InventoryClickEvent invClickEvent = eventStorage.getInventoryClickEvent();
         if(invClickEvent != null) handleInvClickEvent(eventStorage, invClickEvent);
-
+        return null;
     }
 
     @Override
@@ -84,7 +84,6 @@ public class InvEditOverview extends MarsInventory implements IGuiInventory {
 
         if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyMobId, PersistentDataType.INTEGER)) {
             int mobId = clickedItem.getItemMeta().getPersistentDataContainer().get(keyMobId, PersistentDataType.INTEGER);
-            player.sendMessage(mobId + "");
             invFunctionGoBack.addGuiInventory(this);
             IGuiInventory invMobDetails = new InvEditMobDetails(logger, dbHandler, messages, mobId, invFunctionGoBack);
             invMobDetails.open(player);
@@ -97,8 +96,6 @@ public class InvEditOverview extends MarsInventory implements IGuiInventory {
         if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyFilterName, PersistentDataType.STRING)) {
             String filterName = clickedItem.getItemMeta().getPersistentDataContainer().get(keyFilterName, PersistentDataType.STRING);
             boolean active = filterName.equalsIgnoreCase("Active") ? true : false;
-            player.sendMessage("Filter Name: " + filterName);
-            player.sendMessage("Filter Active: " + active);
             IGuiInventory guiInv = getInventory(event.getView().getTitle(), active);
             guiInv.open(player);
             return;

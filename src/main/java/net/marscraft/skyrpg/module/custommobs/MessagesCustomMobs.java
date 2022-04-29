@@ -18,12 +18,19 @@ public class MessagesCustomMobs extends MessageManager {
     public void sendMobTypeSetMessage() {
         sendCancelOptionReminder();
         sendPlayerMessage("MobType erfolgreich gesetzt.");
-        sendPlayerMessage("Bitte &cMaximale Lebenspunkte &ades Mobs im Chat eingeben.");
+
     }
 
-    public void sendMaxHealthSetMessage(double maxHealth) {
+    public void sendEnterBaseHealthMessage() {
+        sendPlayerMessage("Bitte &cBasis Lebenspunkte &ades Mobs im Chat eingeben.");
+    }
+
+    public void sendBaseHealthSetMessage(double maxHealth) {
         sendCancelOptionReminder();
         sendPlayerMessage("Lebenspunkte auf &c" + maxHealth + " &agesetzt");
+    }
+
+    public void sendEnterSpawnChanceMessage() {
         sendPlayerMessage("Bitte &cSpawnChance &aeingeben");
     }
 
@@ -60,5 +67,9 @@ public class MessagesCustomMobs extends MessageManager {
     }
     public void sendTypeSetMessage(String newType) {
         sendPlayerMessage("MobType wurde auf &c" + newType + " &ageändert.");
+    }
+
+    public void sendEntityTypeCouldNotBeSet() {
+        sendPlayerMessage("Entity Type konnte nicht gesetzt werden");
     }
 }

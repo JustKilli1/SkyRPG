@@ -61,13 +61,13 @@ public class SetupCreateCustomMob implements ISetup {
     }
 
     @Override
-    public void finishSetup() {
+    public boolean finishSetup() {
         if(!setupComplete()) {
             messages.sendCreateCustomMobErrorMessage();
-            return;
+            return false;
         }
         sql.insertCustomMob(hostileMob);
-        return;
+        return true;
     }
 
     @Override
@@ -127,7 +127,8 @@ public class SetupCreateCustomMob implements ISetup {
                 return false;
             }
             hostileMob.setBaseHealth(maxHealth);
-            messages.sendMaxHealthSetMessage(maxHealth);
+            messages.sendBaseHealthSetMessage(maxHealth);
+            messages.sendEnterSpawnChanceMessage();
 
             return true;
         }// Does things when maxHealth is set but spawnChance not
@@ -139,7 +140,10 @@ public class SetupCreateCustomMob implements ISetup {
             }
             hostileMob.setSpawnChance(spawnChance);
             messages.sendSpawnChanceSetMessage(spawnChance);
-            finishSetup();
+            if(!finishSetup()) {
+                messages.sendCreateCustomMobErrorMessage();
+                return false;
+            }
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendMobBaseSetupCompleteMessage();

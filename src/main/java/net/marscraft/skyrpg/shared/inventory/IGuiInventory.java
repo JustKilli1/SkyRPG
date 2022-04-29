@@ -23,7 +23,7 @@ public interface IGuiInventory {
      * Handles Event Calls for Inventory
      * @param eventStorage Storage Object which contains calling Event
      * */
-    void handleEvents(EventStorage eventStorage);
+    <T> T handleEvents(EventStorage eventStorage);
 
     /**
      * Returns the Inventory Title

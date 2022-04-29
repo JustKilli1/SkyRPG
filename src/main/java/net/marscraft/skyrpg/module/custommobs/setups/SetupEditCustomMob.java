@@ -59,8 +59,8 @@ public class SetupEditCustomMob implements ISetup {
     }
 
     @Override
-    public void finishSetup() {
-
+    public boolean finishSetup() {
+        return false;
     }
 
     @Override
