@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SetupCustomMob implements ISetup {
+public class SetupCreateCustomMob implements ISetup {
 
     private static Map<UUID, MobHostile> setupMobs = new HashMap<>();
     private final ILogManager logger;
@@ -30,7 +30,7 @@ public class SetupCustomMob implements ISetup {
     private int mobId;
     private MessagesCustomMobs messages;
 
-    public SetupCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
+    public SetupCreateCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
         this.logger = logger;
         this.messages = messages;
         this.mobName = mobName;
@@ -61,13 +61,13 @@ public class SetupCustomMob implements ISetup {
     }
 
     @Override
-    public void finishSetup() {
+    public boolean finishSetup() {
         if(!setupComplete()) {
             messages.sendCreateCustomMobErrorMessage();
-            return;
+            return false;
         }
         sql.insertCustomMob(hostileMob);
-        return;
+        return true;
     }
 
     @Override
@@ -78,6 +78,11 @@ public class SetupCustomMob implements ISetup {
         return hostileMob.setupComplete();
     }
 
+    /**
+     * Handles InventoryClickEvent
+     * @param eventStorage Storage with calling Event
+     * @param event Calling Event
+     */
     private boolean handleInvClickEvent(EventStorage eventStorage, InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if(!setupMobs.containsKey(player.getUniqueId())) return false;
@@ -87,12 +92,16 @@ public class SetupCustomMob implements ISetup {
         String invTitle = event.getView().getTitle();
         IGuiInventory setupInv = getInventory(invTitle, target);
         if(setupInv == null) return false;
-        setupInv.handleClickEvent(eventStorage);
+        setupInv.handleEvents(eventStorage);
 
         event.setCancelled(true);
         return true;
     }
 
+    /**
+     * Handles AsyncPlayerChatEvent
+     * @param event Calling Event
+     */
     private boolean handleAsyncChatEvent(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
@@ -111,30 +120,30 @@ public class SetupCustomMob implements ISetup {
             return true;
         }
         // Does things when maxHealth is not set
-        if(hostileMob.getMaxHealth() <= 0) {
+        if(hostileMob.getBaseHealth() <= 0) {
             double maxHealth = Utils.doubleFromStr(message);
             if(maxHealth <= 0) {
                 messages.sendInvalidMaxHealthMessage(message);
                 return false;
             }
-            hostileMob.setMaxHealth(maxHealth);
-            messages.sendMaxHealthSetMessage(maxHealth);
+            hostileMob.setBaseHealth(maxHealth);
+            messages.sendBaseHealthSetMessage(maxHealth);
+            messages.sendEnterSpawnChanceMessage();
+
             return true;
-        }// Does things when maxHealth is set but level not
-        else if(hostileMob.getLevel() <= 0) {
-            int level = Utils.intFromStr(message);
-            if(level <= 0) {
-                messages.sendInvalidLevelMessage(message);
+        }// Does things when maxHealth is set but spawnChance not
+        else if(hostileMob.getSpawnChance() <= 0) {
+            double spawnChance = Utils.doubleFromStr(message);
+            if(spawnChance <= 0 || spawnChance > 100) {
+                messages.sendInvalidSpawnChanceMessage(message);
                 return false;
             }
-            hostileMob.setLevel(level);
-            if(!hostileMob.setupComplete()) {
+            hostileMob.setSpawnChance(spawnChance);
+            messages.sendSpawnChanceSetMessage(spawnChance);
+            if(!finishSetup()) {
                 messages.sendCreateCustomMobErrorMessage();
-                setupMobs.remove(player.getUniqueId());
                 return false;
             }
-            messages.sendLevelSetMessage(level);
-            finishSetup();
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendMobBaseSetupCompleteMessage();
@@ -143,6 +152,9 @@ public class SetupCustomMob implements ISetup {
         return false;
     }
 
+    /**
+     * Gets GuiInventory matching invTitle
+     */
     private IGuiInventory getInventory(String invTitle, MobHostile mob) {
 
         InvCreateMob invCreateMob = new InvCreateMob(logger, messages, mob);

@@ -17,7 +17,7 @@ public interface ISetup {
      * */
     boolean handleEvents(EventStorage eventStorage);
     void handleCommands(Player player, String... args);
-    void finishSetup();
+    boolean finishSetup();
 
     boolean setupComplete();
 

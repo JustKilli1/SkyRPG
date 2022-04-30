@@ -88,7 +88,7 @@ public class SetupMarsRegion implements ISetup {
     }
 
     @Override
-    public void finishSetup() {
+    public boolean finishSetup() {
         bound.assignCorrectBounds();
         int newRegionId = dbHandler.getLastRegionId() + 1;
         Region region = new Region(logger, newRegionId, regionName, bound);
@@ -96,6 +96,7 @@ public class SetupMarsRegion implements ISetup {
         boundarySetup.remove(player.getUniqueId());
         ModuleRegions.removeSetup(player.getUniqueId());
         messageManager.sendPlayerMessage("&aRegion &c" + regionName + " &awurde erstellt. ");
+        return true;
     }
 
     @Override
