@@ -17,7 +17,9 @@ import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.logmanager.LogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -101,6 +103,26 @@ public class ModuleCustomMobs implements IModule {
         logger.info("§aModule CustomMobs loaded Successfully");
         //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
+
+        new BukkitRunnable() {
+            Set<Entity> stands = ListenerEntityDamage.indicators.keySet();
+            List<Entity> removal = new ArrayList<>();
+            @Override
+            public void run() {
+                for (Entity stand : stands) {
+                    int ticksLeft = ListenerEntityDamage.indicators.get(stand);
+                    if (ticksLeft == 0) {
+                        stand.remove();
+                        removal.add(stand);
+                        continue;
+                    }
+                    ticksLeft--;
+                    ListenerEntityDamage.indicators.put(stand, ticksLeft);
+                }
+                stands.removeAll(removal);
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+
     }
 
     private boolean createDatabaseTables() {
@@ -118,7 +140,7 @@ public class ModuleCustomMobs implements IModule {
         pluginManager.registerEvents(new ListenerInvClose(logger, messagesConfig, dbHandler, sql), plugin);
     }
     private void registerCommands() {
-        plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfig));
+        plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfig, dbHandler));
         plugin.getCommand("marsMobs").setExecutor(new CommandMarsMob(logger, sql, dbHandler, messagesConfig));
     }
 

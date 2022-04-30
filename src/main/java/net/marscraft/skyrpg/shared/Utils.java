@@ -55,7 +55,11 @@ public class Utils {
             return null;
         }
     }
-
+    public static double getRandomOffset() {
+        double random = Math.random();
+        if (Math.random() > 0.5) random *= -1;
+        return random;
+    }
     /**
      * Converts String to ItemStack
      * @param iStackAsStr ItemStack as String that gets Converted to ItemStack

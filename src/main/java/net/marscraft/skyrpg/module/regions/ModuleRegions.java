@@ -70,13 +70,13 @@ public class ModuleRegions implements IModule {
             return;
         }
 
-        logger.info("Loading Module: CustomMobs");
+        logger.info("Loading Module: Regions");
         logger.info("Creating required Databases...");
         if(!createDatabaseTables()) logger.error("Could not create required databases");
         logger.info("All Databases created.");
         registerListener();
         registerCommands();
-        logger.info("§aModule CustomMobs loaded Successfully");
+        logger.info("§aModule Regions loaded Successfully");
         //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
         updateModuleMode(LIVE);
@@ -97,9 +97,9 @@ public class ModuleRegions implements IModule {
 
     @Override
     public void onModuleDisable() {
-        logger.info("Disabling Module CustomMobs...");
+        logger.info("Disabling Module Regions...");
         updateModuleState(INACTIVE);
-        logger.info("Module CustomMobs Disabled");
+        logger.info("Module Regions Disabled");
     }
 
     @Override

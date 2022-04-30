@@ -147,7 +147,7 @@ public class InvEditMobDetails extends MarsInventory implements IGuiInventory {
                 case "state":
                     NamespacedKey keyStateItem = new NamespacedKey(Main.getPlugin(Main.class), "state");
                     if(clickedItem.getItemMeta().getPersistentDataContainer().has(keyStateItem, PersistentDataType.STRING)) {
-                        boolean active = clickedItem.getItemMeta().getPersistentDataContainer().get(keyStateItem, PersistentDataType.STRING).equalsIgnoreCase("Active") ? true : false;
+                        boolean active = clickedItem.getItemMeta().getPersistentDataContainer().get(keyStateItem, PersistentDataType.STRING).equalsIgnoreCase("Active") ? false : true;
                         hostileMob.setActive(active);
                         sql.updateCustomMobActive(mobId, active);
                         open(player);

@@ -34,6 +34,10 @@ public class MessagesCustomMobs extends MessageManager {
         sendPlayerMessage("Bitte &cSpawnChance &aeingeben");
     }
 
+    public void sendInvalidMobIdMessage(String mobId) {
+        sendPlayerMessage("&c" + mobId + " &aist keine gültige MobId. Bitte eine &cGanzzahl &aangeben");
+    }
+
     public void sendCancelOptionReminder() {
         sendPlayerMessage("Gebe &ccancel &aein um die Erstellung abzubrechen");
     }
@@ -71,5 +75,13 @@ public class MessagesCustomMobs extends MessageManager {
 
     public void sendEntityTypeCouldNotBeSet() {
         sendPlayerMessage("Entity Type konnte nicht gesetzt werden");
+    }
+
+    public void sendMobIdNotFound(int mobId) {
+        sendPlayerMessage("Mob mit der Id &c" + mobId + " &akonnte nicht gefunden werden.");
+    }
+
+    public void sendMobSpawned(String mobName) {
+        sendPlayerMessage("&c" + mobName + " &awurde gespawnt!");
     }
 }

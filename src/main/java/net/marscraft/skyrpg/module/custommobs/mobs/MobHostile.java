@@ -60,14 +60,12 @@ public class MobHostile {
     public LivingEntity spawn(Location loc) {
         LivingEntity entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
 
-
-
         //entity.setVisualFire(true);
         entity.setCustomNameVisible(true);
-        entity.setCustomName("§a" + name + " §r§c" + (int) baseHealth + "/" + (int) baseHealth + "❤");
-        entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.5);
+        entity.setCustomName(buildCustomName(baseHealth));
+        //entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.5);
         entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(baseHealth);
-        entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
+        //entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
         entity.setHealth(baseHealth);
         EntityEquipment inv = entity.getEquipment();
         if (armor != null) inv.setArmorContents(armor);
@@ -110,7 +108,7 @@ public class MobHostile {
      * @param health Current Health from Mob
      * @return Formatted CustomName
      */
-    private String buildCustomName(double health) { return "§a" + name + " §r§c" + (int) health + "/" + (int) baseHealth + "❤"; }
+    private String buildCustomName(double health) { return "§c" + name + " §a" + (int) health + "/" + (int) baseHealth + "§c❤"; }
 
     public int getId() { return id; }
 

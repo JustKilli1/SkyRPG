@@ -3,8 +3,12 @@ package net.marscraft.skyrpg.module.custommobs.listeners;
 import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
+import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -12,10 +16,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ListenerEntityDamage implements Listener {
 
     private ILogManager logger;
     private DBHandlerCustomMobs dbHandler;
+    public static Map<Entity, Integer> indicators = new HashMap<>();
+    private DecimalFormat formatter = new DecimalFormat("#.##");
 
     public ListenerEntityDamage(ILogManager logger, DBHandlerCustomMobs dbHandler) {
         this.logger = logger;
@@ -44,6 +54,17 @@ public class ListenerEntityDamage implements Listener {
             health = Math.ceil(health);
             rawEntity = mobHostile.setCurrentHealth(rawEntity, health);
         }
+        World world = entity.getWorld();
+        Location loc = entity.getLocation().clone().add(Utils.getRandomOffset(), 1, Utils.getRandomOffset());
+        world.spawn(loc, ArmorStand.class, armorStand -> {
+            armorStand.setMarker(true);
+            armorStand.setVisible(false);
+            armorStand.setGravity(false);
+            armorStand.setSmall(true);
+            armorStand.setCustomNameVisible(true);
+            armorStand.setCustomName("§c" + formatter.format(damage) + "☼");
+            indicators.put(armorStand, 20);
+        });
     }
 
 }
