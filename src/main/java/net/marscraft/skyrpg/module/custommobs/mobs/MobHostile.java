@@ -68,7 +68,12 @@ public class MobHostile {
         //entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
         entity.setHealth(baseHealth);
         EntityEquipment inv = entity.getEquipment();
-        if (armor != null) inv.setArmorContents(armor);
+        if (armor != null) {
+            inv.setHelmet(armor[0]);
+            inv.setChestplate(armor[1]);
+            inv.setLeggings(armor[2]);
+            inv.setBoots(armor[3]);
+        }
         inv.setHelmetDropChance(0f);
         inv.setChestplateDropChance(0f);
         inv.setLeggingsDropChance(0f);

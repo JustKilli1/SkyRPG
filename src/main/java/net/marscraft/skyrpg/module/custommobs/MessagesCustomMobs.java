@@ -38,6 +38,10 @@ public class MessagesCustomMobs extends MessageManager {
         sendPlayerMessage("&c" + mobId + " &aist keine gültige MobId. Bitte eine &cGanzzahl &aangeben");
     }
 
+    public void sendInvalidAmountMessage(String mobId) {
+        sendPlayerMessage("&c" + mobId + " &aist keine gültige Anzahl. Bitte eine &cGanzzahl &aangeben");
+    }
+
     public void sendCancelOptionReminder() {
         sendPlayerMessage("Gebe &ccancel &aein um die Erstellung abzubrechen");
     }

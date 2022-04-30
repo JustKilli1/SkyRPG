@@ -38,13 +38,18 @@ public class CommandSpawnCustomMob implements CommandExecutor {
 
         NamespacedKey keyCustomMob = new NamespacedKey(Main.getPlugin(Main.class), "customMob");
         MessagesCustomMobs messages = new MessagesCustomMobs(logger, messagesConfigManager, player);
-        if(args.length != 1) {
-            messages.sendPlayerSyntaxError("spawncustommob [mobId]");
+        if(args.length != 2) {
+            messages.sendPlayerSyntaxError("spawncustommob [mobId] [amount]");
             return false;
         }
         int mobId = Utils.intFromStr(args[0]);
+        int amount = Utils.intFromStr(args[1]);
         if(mobId <= 0) {
             messages.sendInvalidMobIdMessage(args[0]);
+            return false;
+        }
+        if(amount <= 0) {
+            messages.sendInvalidAmountMessage(args[1]);
             return false;
         }
         MobHostile hostileMob = dbHandler.getHostileMobById(mobId);
@@ -54,9 +59,10 @@ public class CommandSpawnCustomMob implements CommandExecutor {
         }
         Location spawnLoc = player.getLocation();
 
-        LivingEntity entity = hostileMob.spawn(spawnLoc);
-        entity.getPersistentDataContainer().set(keyCustomMob, PersistentDataType.INTEGER, Integer.parseInt(args[0]));
-
+        for(int i = 0; i < amount; i++) {
+            LivingEntity entity = hostileMob.spawn(spawnLoc);
+            entity.getPersistentDataContainer().set(keyCustomMob, PersistentDataType.INTEGER, Integer.parseInt(args[0]));
+        }
         messages.sendMobSpawned(hostileMob.getName());
 
         return false;
