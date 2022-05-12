@@ -1,18 +1,21 @@
 package net.marscraft.skyrpg.module.custommobs.mobs;
 
+import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.custommobs.loot.LootItem;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-public class MobHostile {
+public class MobHostile extends MobHandler {
 
     private ILogManager logger;
     private String name;
@@ -22,15 +25,18 @@ public class MobHostile {
     private ItemStack mainItem;
     private ItemStack[] armor;
     private List<LootItem> loot;
+    private double levelMultiplier;
     private boolean active;
 
     public MobHostile(ILogManager logger, int id, String name) {
+        super(logger);
         this.logger = logger;
         this.id = id;
         this.name = name;
     }
 
     public MobHostile(ILogManager logger, String name, int id, double baseHealth, double spawnChance, EntityType type) {
+        super(logger);
         this.logger = logger;
         this.name = name;
         this.id = id;
@@ -40,6 +46,7 @@ public class MobHostile {
     }
 
     public MobHostile(ILogManager logger, String name, int id, double baseHealth, double spawnChance, EntityType type, ItemStack mainItem, ItemStack[] armor, List<LootItem> loot, boolean active) {
+        super(logger);
         this.logger = logger;
         this.name = name;
         this.id = id;
@@ -58,13 +65,15 @@ public class MobHostile {
      * @return The Spawned Mob as LivingEntity
      * */
     public LivingEntity spawn(Location loc) {
+        NamespacedKey keyCustomMob = new NamespacedKey(Main.getPlugin(Main.class), "customMob");
         LivingEntity entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
-
+        entity.getPersistentDataContainer().set(keyCustomMob, PersistentDataType.INTEGER, id);
         //entity.setVisualFire(true);
         entity.setCustomNameVisible(true);
         entity.setCustomName(buildCustomName(baseHealth));
         //entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.5);
         entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(baseHealth);
+        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(100);
         //entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
         entity.setHealth(baseHealth);
         EntityEquipment inv = entity.getEquipment();
@@ -80,7 +89,6 @@ public class MobHostile {
         inv.setBootsDropChance(0f);
         inv.setItemInMainHand(mainItem);
         inv.setItemInMainHandDropChance(0f);
-
         return entity;
     }
 
@@ -153,5 +161,13 @@ public class MobHostile {
     public Entity setCurrentHealth(Entity entity, double currentHealth) {
         this.currentHealth = currentHealth;
         return updateHealth(entity);
+    }
+
+    public double getLevelMultiplier() {
+        return levelMultiplier;
+    }
+
+    public void setLevelMultiplier(double levelMultiplier) {
+        this.levelMultiplier = levelMultiplier;
     }
 }

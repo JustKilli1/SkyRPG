@@ -85,7 +85,7 @@ public class MessagesCustomMobs extends MessageManager {
         sendPlayerMessage("Mob mit der Id &c" + mobId + " &akonnte nicht gefunden werden.");
     }
 
-    public void sendMobSpawned(String mobName) {
-        sendPlayerMessage("&c" + mobName + " &awurde gespawnt!");
+    public void sendMobSpawned(String mobName, int amount) {
+        sendPlayerMessage("&c"+ amount + " " + mobName + " &awurden gespawnt!");
     }
 }

@@ -51,7 +51,6 @@ public class ModuleCustomMobs implements IModule {
         this.messagesConfig = messagesConfig;
         this.requiredModules = requiredModules;
 
-        onModuleEnable();
     }
 
     public ModuleCustomMobs(Main plugin, ModuleMode moduleMode, IConfigManager mysqlConfig, IConfigManager messagesConfig, List<IModule> requiredModules) {
@@ -63,7 +62,6 @@ public class ModuleCustomMobs implements IModule {
         this.requiredModules = requiredModules;
 
         updateModuleMode(moduleMode);
-        onModuleEnable();
     }
 
     private boolean requiredModulesActive() {
@@ -100,28 +98,12 @@ public class ModuleCustomMobs implements IModule {
         logger.info("All Databases created.");
         registerListener();
         registerCommands();
+        startDamageIndicators();
         logger.info("§aModule CustomMobs loaded Successfully");
         //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
 
-        new BukkitRunnable() {
-            Set<Entity> stands = ListenerEntityDamage.indicators.keySet();
-            List<Entity> removal = new ArrayList<>();
-            @Override
-            public void run() {
-                for (Entity stand : stands) {
-                    int ticksLeft = ListenerEntityDamage.indicators.get(stand);
-                    if (ticksLeft == 0) {
-                        stand.remove();
-                        removal.add(stand);
-                        continue;
-                    }
-                    ticksLeft--;
-                    ListenerEntityDamage.indicators.put(stand, ticksLeft);
-                }
-                stands.removeAll(removal);
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
+
 
     }
 
@@ -142,6 +124,27 @@ public class ModuleCustomMobs implements IModule {
     private void registerCommands() {
         plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfig, dbHandler));
         plugin.getCommand("marsMobs").setExecutor(new CommandMarsMob(logger, sql, dbHandler, messagesConfig));
+    }
+
+    private void startDamageIndicators() {
+        new BukkitRunnable() {
+            Set<Entity> stands = ListenerEntityDamage.indicators.keySet();
+            List<Entity> removal = new ArrayList<>();
+            @Override
+            public void run() {
+                for (Entity stand : stands) {
+                    int ticksLeft = ListenerEntityDamage.indicators.get(stand);
+                    if (ticksLeft == 0) {
+                        stand.remove();
+                        removal.add(stand);
+                        continue;
+                    }
+                    ticksLeft--;
+                    ListenerEntityDamage.indicators.put(stand, ticksLeft);
+                }
+                stands.removeAll(removal);
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 
     @Override

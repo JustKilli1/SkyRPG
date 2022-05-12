@@ -21,14 +21,14 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvCreateMob extends MarsInventory implements IGuiInventory {
+public class InvSelectMobType extends MarsInventory implements IGuiInventory {
 
     public final static String title = "MobType auswählen";
     private ILogManager logger;
     private MessagesCustomMobs messages;
     private MobHostile mob;
 
-    public InvCreateMob(ILogManager logger, MessagesCustomMobs messages, MobHostile mob) {
+    public InvSelectMobType(ILogManager logger, MessagesCustomMobs messages, MobHostile mob) {
         super(logger);
         this.logger = logger;
         this.messages = messages;
@@ -65,7 +65,6 @@ public class InvCreateMob extends MarsInventory implements IGuiInventory {
             return null;
         }
         Player player = (Player) event.getWhoClicked();
-        player.sendMessage("geklickt");
         event.setCancelled(true);
         if(event.getClick() == ClickType.LEFT) {
 
@@ -96,10 +95,28 @@ public class InvCreateMob extends MarsInventory implements IGuiInventory {
     private List<ItemStack> getMobTypes() {
         List<ItemStack> mobTypes = new ArrayList<>();
         mobTypes.add(buildMobTypeItem(Material.ZOMBIE_SPAWN_EGG, "Zombie", "Zombie"));
+        mobTypes.add(buildMobTypeItem(Material.ZOMBIE_VILLAGER_SPAWN_EGG, "Zombie Villager", "Zombie_Villager"));
         mobTypes.add(buildMobTypeItem(Material.SKELETON_SPAWN_EGG, "Skelett", "Skeleton"));
         mobTypes.add(buildMobTypeItem(Material.SPIDER_SPAWN_EGG, "Spinne", "Spider"));
+        mobTypes.add(buildMobTypeItem(Material.CAVE_SPIDER_SPAWN_EGG, "Höhlenspinne", "Cave_Spider"));
         mobTypes.add(buildMobTypeItem(Material.CREEPER_SPAWN_EGG, "Creeper", "Creeper", "§cHow dare you?!?!"));
         mobTypes.add(buildMobTypeItem(Material.ENDERMAN_SPAWN_EGG, "Enderman", "Enderman"));
+        mobTypes.add(buildMobTypeItem(Material.WITCH_SPAWN_EGG, "Hexe", "Witch"));
+        mobTypes.add(buildMobTypeItem(Material.SLIME_SPAWN_EGG, "Schleim", "Slime"));
+        mobTypes.add(buildMobTypeItem(Material.PILLAGER_SPAWN_EGG, "Pillager", "Pillager"));
+        mobTypes.add(buildMobTypeItem(Material.STRAY_SPAWN_EGG, "Stray", "Stray"));
+        mobTypes.add(buildMobTypeItem(Material.SHULKER_SPAWN_EGG, "Shulker", "Shulker"));
+        mobTypes.add(buildMobTypeItem(Material.HUSK_SPAWN_EGG, "Husk", "Husk"));
+        mobTypes.add(buildMobTypeItem(Material.MAGMA_CUBE_SPAWN_EGG, "Magma Cube", "Magma_Cube"));
+        mobTypes.add(buildMobTypeItem(Material.WITHER_SKELETON_SPAWN_EGG, "Wither Skeleton", "Wither_Skeleton"));
+        mobTypes.add(buildMobTypeItem(Material.GHAST_SPAWN_EGG, "Ghast", "Ghast"));
+        mobTypes.add(buildMobTypeItem(Material.BLAZE_SPAWN_EGG, "Blaze", "Blaze"));
+        mobTypes.add(buildMobTypeItem(Material.PIGLIN_SPAWN_EGG, "Piglin", "Piglin"));
+        mobTypes.add(buildMobTypeItem(Material.PIGLIN_BRUTE_SPAWN_EGG, "Piglin Brute", "Piglin_Brute"));
+        mobTypes.add(buildMobTypeItem(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, "Zombified Piglin", "Zombified_Piglin"));
+        mobTypes.add(buildMobTypeItem(Material.HOGLIN_SPAWN_EGG, "Hoglin", "Hoglin"));
+        mobTypes.add(buildMobTypeItem(Material.ENDERMITE_SPAWN_EGG, "Endermite", "Endermite"));
+        mobTypes.add(buildMobTypeItem(Material.VEX_SPAWN_EGG, "Vex", "Vex"));
         return mobTypes;
 
     }

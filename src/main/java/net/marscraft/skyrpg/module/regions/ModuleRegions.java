@@ -43,7 +43,6 @@ public class ModuleRegions implements IModule {
         dbHandler = new DBHandlerRegions(logger, this.sql);
         this.messagesConfig = messagesConfig;
 
-        onModuleEnable();
     }
 
     public ModuleRegions(Main plugin, ModuleMode moduleMode, IConfigManager mysqlConfig, IConfigManager messagesConfig) {
@@ -53,7 +52,6 @@ public class ModuleRegions implements IModule {
         this.messagesConfig = messagesConfig;
 
         updateModuleMode(moduleMode);
-        onModuleEnable();
     }
 
 

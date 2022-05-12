@@ -4,13 +4,12 @@ import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
+import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvSelectMobType;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -50,7 +49,7 @@ public class SetupCustomMobEntityType implements ISetup {
     public void handleCommands(Player player, String... args) {
 
         if(guiInvs.containsKey(player.getUniqueId())) return;
-        IGuiInventory inv = new InvCreateMob(logger, messages, hostileMob);
+        IGuiInventory inv = new InvSelectMobType(logger, messages, hostileMob);
         inv.open(player);
         guiInvs.put(player.getUniqueId(), inv);
     }

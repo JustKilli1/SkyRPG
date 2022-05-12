@@ -1,6 +1,7 @@
 package net.marscraft.skyrpg.base;
 
 import net.marscraft.skyrpg.commands.CommandTest;
+import net.marscraft.skyrpg.module.customitems.ModuleCustomItems;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.configmanager.ConfigManager;
@@ -69,7 +70,9 @@ public final class Main extends JavaPlugin {
     private boolean loadModules() {
 
         ModuleRegions moduleRegions = new ModuleRegions(this, mysqlConfig, messageConfig);
+        moduleRegions.onModuleEnable();
         ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig, Arrays.asList(moduleRegions));
+        moduleCustomMobs.onModuleEnable();
 
         return true;
     }

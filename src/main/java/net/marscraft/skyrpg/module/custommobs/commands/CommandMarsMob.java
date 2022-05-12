@@ -6,7 +6,6 @@ import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.inventory.editinventory.InvEditOverview;
 import net.marscraft.skyrpg.module.custommobs.setups.SetupCreateCustomMob;
-import net.marscraft.skyrpg.module.custommobs.setups.SetupEditCustomMob;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;

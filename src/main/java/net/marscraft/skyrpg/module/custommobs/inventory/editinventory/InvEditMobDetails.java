@@ -5,7 +5,6 @@ import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
 import net.marscraft.skyrpg.module.custommobs.inventory.invfunctions.InvFunctionMobDetails;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.module.custommobs.setups.*;

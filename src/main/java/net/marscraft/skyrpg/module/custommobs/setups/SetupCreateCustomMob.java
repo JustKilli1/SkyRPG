@@ -4,7 +4,7 @@ import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
+import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvSelectMobType;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.events.EventStorage;
@@ -56,7 +56,7 @@ public class SetupCreateCustomMob implements ISetup {
         if (!setupMobs.containsKey(player.getUniqueId())) {
             setupMobs.put(player.getUniqueId(), mob);
         }
-        IGuiInventory iGuiInventory = new InvCreateMob(logger, messages, mob);
+        IGuiInventory iGuiInventory = new InvSelectMobType(logger, messages, mob);
         iGuiInventory.open(player);
     }
 
@@ -157,9 +157,9 @@ public class SetupCreateCustomMob implements ISetup {
      */
     private IGuiInventory getInventory(String invTitle, MobHostile mob) {
 
-        InvCreateMob invCreateMob = new InvCreateMob(logger, messages, mob);
+        InvSelectMobType invSelectMobType = new InvSelectMobType(logger, messages, mob);
 
-        if (invCreateMob.getTitle().equals(invTitle)) return invCreateMob;
+        if (invSelectMobType.getTitle().equals(invTitle)) return invSelectMobType;
         else return null;
 
     }
