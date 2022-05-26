@@ -22,16 +22,16 @@ public class Utils {
 
     /**
      * Gets Command from String[] args starting at: startingPoint
-     * @param args Command
-     * @param startingPoint Index where to start in args Array
-     * @return String from String[] args
+     * @param target Command
+     * @param startIndex Index where to start in target Array
+     * @return String from String[] target
      * */
-    public static String getStrFromArray(String[] args, int startingPoint) {
+    public static String getStrFromArray(String[] target, int startIndex) {
         String tmpStr = "";
-        for(int i = startingPoint; i < args.length; i++) {
-            String arg = args[i];
-            if(i == startingPoint) tmpStr = arg;
-            else tmpStr += " " + arg;
+        for(int i = startIndex; i < target.length; i++) {
+            String str = target[i];
+            if(i == startIndex) tmpStr = str;
+            else tmpStr += " " + str;
         }
         return tmpStr;
     }

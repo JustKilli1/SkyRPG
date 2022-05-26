@@ -6,15 +6,16 @@ import net.marscraft.skyrpg.module.ModuleMode;
 import net.marscraft.skyrpg.module.ModuleState;
 import net.marscraft.skyrpg.module.customitems.database.DBAccesLayerCustomItems;
 import net.marscraft.skyrpg.module.customitems.database.DBHandlerCustomItems;
-import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
-import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.logmanager.LogManager;
+import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.plugin.PluginManager;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static net.marscraft.skyrpg.module.ModuleMode.*;
 import static net.marscraft.skyrpg.module.ModuleState.*;
@@ -23,6 +24,7 @@ public class ModuleCustomItems implements IModule {
 
     private static final String moduleName = "CustomItems";
     private static final String moduleDescription = "Implements Custom Items";
+    private static Map<UUID, ISetup> setups = new HashMap<>();
     private final ILogManager logger;
     private ModuleState moduleState;
     private ModuleMode moduleMode;
@@ -131,5 +133,10 @@ public class ModuleCustomItems implements IModule {
     public String getModuleDescription() {
         return moduleDescription;
     }
+
+    public static Map<UUID, ISetup> getSetups() { return setups; }
+    public static void setSetups(Map<UUID, ISetup> setups) { ModuleCustomItems.setups = setups; }
+    public static void addSetup(UUID key, ISetup value) { setups.put(key, value); }
+    public static void removeSetup(UUID key) { setups.remove(key); }
 
 }

@@ -1,4 +1,4 @@
-package net.marscraft.skyrpg.module.customitems;
+package net.marscraft.skyrpg.module.customitems.customitem;
 
 public enum ItemRarity {
 
@@ -17,6 +17,23 @@ public enum ItemRarity {
         this.id = id;
     }
 
+    public static ItemRarity valueOf(int rarityAsInt) {
+
+        switch (rarityAsInt) {
+            case 1:
+                return UNGEWOEHNLICH;
+            case 2:
+                return NORMAL;
+            case 3:
+                return EPISCH;
+            case 4:
+                return LEGENDAER;
+            case 5:
+                return EINZIGARTIG;
+            default:
+                return null;
+        }
+    }
 
     public String getDisplayName() {
         return displayName;
