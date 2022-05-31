@@ -11,4 +11,8 @@ public class MessagesCustomItems extends MessageManager {
         super(logger, configManager, player);
     }
 
+    public void sendInvalidItemTypeMessage() {
+        sendPlayerMessage("§cItemType §akonnte nicht gesetzt werden");
+    }
+
 }

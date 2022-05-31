@@ -42,7 +42,7 @@ public class CustomItem {
             logger.error("Could not Build Custom Item. Material is null", new Exception());
             return null;
         }
-        itemId = dbHandler.getLastCustomItemId() + 1;
+        itemId = itemId == 0 ? dbHandler.getLastCustomItemId() + 1 : itemId;
         item = new ItemBuilder(itemMat)
                 .setDisplayname(itemName)
                 .setLore(rarity.getDisplayName())
@@ -86,7 +86,16 @@ public class CustomItem {
         this.item = item;
     }
 
+    public Material getItemMat() {
+        return itemMat;
+    }
+
     public void setItemMat(Material itemMat) {
         this.itemMat = itemMat;
+        item = build();
+    }
+
+    public int getItemId() {
+        return itemId;
     }
 }

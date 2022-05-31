@@ -36,13 +36,13 @@ public class SetupCustomMobEntityType implements ISetup {
 
 
     @Override
-    public boolean handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         InventoryClickEvent invClickEvent = eventStorage.getInventoryClickEvent();
         if(invClickEvent != null) handleInventoryClickEvent(eventStorage, invClickEvent);
 
 
-        return false;
+        return null;
     }
 
     @Override

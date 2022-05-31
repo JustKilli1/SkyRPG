@@ -25,3 +25,8 @@ commands:
     aliases:
       - mm
       - mmobs
+  marsItem:
+    description: MarsItems Command
+    aliases:
+      - mi
+      - mitem

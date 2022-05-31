@@ -25,7 +25,7 @@ public class InvFunctionGoBack extends InvFunction{
     }
 
     public Inventory add(Inventory inv, int row) {
-        int startIndex = (row * 9) - 9;
+        int startIndex = getStartIndex(row);
         ItemStack[] invContents = inv.getContents();
         if(invContents.length <= startIndex) {
             logger.error("Länge: " + invContents.length);

@@ -4,8 +4,12 @@ import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.IModule;
 import net.marscraft.skyrpg.module.ModuleMode;
 import net.marscraft.skyrpg.module.ModuleState;
+import net.marscraft.skyrpg.module.customitems.commands.CommandMarsItem;
 import net.marscraft.skyrpg.module.customitems.database.DBAccesLayerCustomItems;
 import net.marscraft.skyrpg.module.customitems.database.DBHandlerCustomItems;
+import net.marscraft.skyrpg.module.customitems.listeners.ListenerInvClose;
+import net.marscraft.skyrpg.module.custommobs.commands.CommandSpawnCustomMob;
+import net.marscraft.skyrpg.module.custommobs.listeners.ListenerEntityDamage;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
@@ -62,26 +66,26 @@ public class ModuleCustomItems implements IModule {
             return;
         }
 
-        logger.info("Loading Module: Regions");
+        logger.info("Loading Module: CustomItems");
         logger.info("Creating required Databases...");
-        //if(!createDatabaseTables()) logger.error("Could not create required databases");
+        if(!createDatabaseTables()) logger.error("Could not create required databases");
         logger.info("All Databases created.");
         registerListener();
         registerCommands();
-        logger.info("§aModule Regions loaded Successfully");
-        //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
+        logger.info("§aModule CustomItems loaded Successfully");
         updateModuleState(ACTIVE);
         updateModuleMode(LIVE);
     }
 
     private boolean createDatabaseTables() {
-        //return sql.createTableRegions();
-        return true;
+        return sql.createTableCustomItems();
     }
     private void registerListener() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
+        pluginManager.registerEvents(new ListenerInvClose(logger, messagesConfig), plugin);
     }
     private void registerCommands() {
+        plugin.getCommand("marsitem").setExecutor(new CommandMarsItem(logger, dbHandler, messagesConfig, sql));
     }
 
     @Override

@@ -40,14 +40,14 @@ public class SetupCreateCustomMob implements ISetup {
     }
 
     @Override
-    public boolean handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         InventoryClickEvent invClickEvent = eventStorage.getInventoryClickEvent();
         if(invClickEvent != null) return handleInvClickEvent(eventStorage, invClickEvent);
 
         AsyncPlayerChatEvent asyncChatEvent = eventStorage.getAsyncPlayerChatEvent();
         if(asyncChatEvent != null) return handleAsyncChatEvent(asyncChatEvent);
-        return false;
+        return null;
     }
 
     @Override
@@ -83,33 +83,33 @@ public class SetupCreateCustomMob implements ISetup {
      * @param eventStorage Storage with calling Event
      * @param event Calling Event
      */
-    private boolean handleInvClickEvent(EventStorage eventStorage, InventoryClickEvent event) {
+    private <T> T handleInvClickEvent(EventStorage eventStorage, InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(!setupMobs.containsKey(player.getUniqueId())) return false;
+        if(!setupMobs.containsKey(player.getUniqueId())) return null;
         MobHostile target = setupMobs.get(player.getUniqueId());
 
 
         String invTitle = event.getView().getTitle();
         IGuiInventory setupInv = getInventory(invTitle, target);
-        if(setupInv == null) return false;
+        if(setupInv == null) return null;
         setupInv.handleEvents(eventStorage);
 
         event.setCancelled(true);
-        return true;
+        return null;
     }
 
     /**
      * Handles AsyncPlayerChatEvent
      * @param event Calling Event
      */
-    private boolean handleAsyncChatEvent(AsyncPlayerChatEvent event) {
+    private <T> T handleAsyncChatEvent(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
-        if(!setupMobs.containsKey(player.getUniqueId())) return false;
+        if(!setupMobs.containsKey(player.getUniqueId())) return null;
         hostileMob = setupMobs.get(player.getUniqueId());
         if(hostileMob.getType() == null) {
             setupMobs.remove(player.getUniqueId());
-            return false;
+            return null;
         }
         String message = event.getMessage();
         event.setCancelled(true);
@@ -117,39 +117,39 @@ public class SetupCreateCustomMob implements ISetup {
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendSetupCancelledMessage();
-            return true;
+            return null;
         }
         // Does things when maxHealth is not set
         if(hostileMob.getBaseHealth() <= 0) {
             double maxHealth = Utils.doubleFromStr(message);
             if(maxHealth <= 0) {
                 messages.sendInvalidMaxHealthMessage(message);
-                return false;
+                return null;
             }
             hostileMob.setBaseHealth(maxHealth);
             messages.sendBaseHealthSetMessage(maxHealth);
             messages.sendEnterSpawnChanceMessage();
 
-            return true;
+            return null;
         }// Does things when maxHealth is set but spawnChance not
         else if(hostileMob.getSpawnChance() <= 0) {
             double spawnChance = Utils.doubleFromStr(message);
             if(spawnChance <= 0 || spawnChance > 100) {
                 messages.sendInvalidSpawnChanceMessage(message);
-                return false;
+                return null;
             }
             hostileMob.setSpawnChance(spawnChance);
             messages.sendSpawnChanceSetMessage(spawnChance);
             if(!finishSetup()) {
                 messages.sendCreateCustomMobErrorMessage();
-                return false;
+                return null;
             }
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendMobBaseSetupCompleteMessage();
-            return true;
+            return null;
         }
-        return false;
+        return null;
     }
 
     /**
