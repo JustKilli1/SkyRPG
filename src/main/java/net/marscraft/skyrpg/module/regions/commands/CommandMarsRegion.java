@@ -1,11 +1,14 @@
 package net.marscraft.skyrpg.module.regions.commands;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
+import net.marscraft.skyrpg.module.regions.inventory.InvRegions;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
+import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
@@ -39,7 +42,7 @@ public class CommandMarsRegion implements CommandExecutor {
         if(!(sender instanceof Player)) return true;
 
         Player player = (Player) sender;
-        MessageManager messageManager = new MessageManager(logger, configManager, player);
+        MessagesRegions messages = new MessagesRegions(logger, configManager, player);
 
         if(args.length == 0) {
             showRegionOverview(player);
@@ -50,16 +53,16 @@ public class CommandMarsRegion implements CommandExecutor {
             case "create":
 
                 if(args.length < 2) {
-                    messageManager.sendPlayerSyntaxError("mr create [RegionName]");
+                    messages.sendRegionCommandCreateSyntaxError();
                     return true;
                 }
                 String regionName = Utils.getStrFromArray(args, 1);
-                ISetup setup = new SetupMarsRegion(logger, messageManager, regionName, sql);
+                ISetup setup = new SetupMarsRegion(logger, regionName, sql, messages);
                 ModuleRegions.addSetup(player.getUniqueId(), setup);
                 setup.handleCommands(player, args);
                 break;
             default:
-                messageManager.sendPlayerSyntaxError("mr help");
+                messages.sendRegionCommandSyntaxError();
                 break;
         }
 
@@ -72,6 +75,7 @@ public class CommandMarsRegion implements CommandExecutor {
      * @param player Player who sees the Inventory
      * */
     private void showRegionOverview(Player player) {
-
+        IGuiInventory inv = new InvRegions(logger, dbHandler);
+        inv.open(player);
     }
 }

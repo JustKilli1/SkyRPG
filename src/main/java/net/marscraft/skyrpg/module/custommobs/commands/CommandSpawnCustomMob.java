@@ -1,49 +1,59 @@
 package net.marscraft.skyrpg.module.custommobs.commands;
 
-import com.sun.tools.javac.util.List;
-import net.marscraft.skyrpg.base.Main;
-import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
+import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
+import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
-import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 public class CommandSpawnCustomMob implements CommandExecutor {
 
     private ILogManager logger;
     private IConfigManager messagesConfigManager;
+    private DBHandlerCustomMobs dbHandler;
 
-    public CommandSpawnCustomMob(ILogManager logger, IConfigManager messagesConfigManager) {
+    public CommandSpawnCustomMob(ILogManager logger, IConfigManager messagesConfigManager, DBHandlerCustomMobs dbHandler) {
         this.logger = logger;
         this.messagesConfigManager = messagesConfigManager;
+        this.dbHandler = dbHandler;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!(sender instanceof Player)) return false;
         Player player = (Player) sender;
-        NamespacedKey keyCustomMob = new NamespacedKey(Main.getPlugin(Main.class), "customMob");
-        MessageManager messageManager = new MessageManager(logger, messagesConfigManager, player);
+
+
+        MessagesCustomMobs messages = new MessagesCustomMobs(logger, messagesConfigManager, player);
+        if(args.length != 2) {
+            messages.sendPlayerSyntaxError("spawncustommob [mobId] [amount]");
+            return false;
+        }
+        int mobId = Utils.intFromStr(args[0]);
+        int amount = Utils.intFromStr(args[1]);
+        if(mobId <= 0) {
+            messages.sendInvalidMobIdMessage(args[0]);
+            return false;
+        }
+        if(amount <= 0) {
+            messages.sendInvalidAmountMessage(args[1]);
+            return false;
+        }
+        MobHostile hostileMob = dbHandler.getHostileMobById(mobId);
+        if(hostileMob == null) {
+            messages.sendMobIdNotFound(mobId);
+            return false;
+        }
         Location spawnLoc = player.getLocation();
 
-        MobHostile hostileMob = new MobHostile(logger, "Test1", 1, 30.0, 80.0, org.bukkit.entity.EntityType.ZOMBIE);
-        hostileMob.setMainItem(new ItemStack(Material.DIAMOND_SWORD));
-
-        LivingEntity entity = hostileMob.spawn(spawnLoc);
-        entity.getPersistentDataContainer().set(keyCustomMob, PersistentDataType.INTEGER, Integer.parseInt(args[0]));
-
-        messageManager.sendPlayerMessage("Mob gespawnt!");
+        for(int i = 0; i < amount; i++) hostileMob.spawn(spawnLoc);
+        messages.sendMobSpawned(hostileMob.getName(), amount);
 
         return false;
     }

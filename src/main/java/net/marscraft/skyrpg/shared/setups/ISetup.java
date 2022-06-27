@@ -15,9 +15,9 @@ public interface ISetup {
      * @param eventStorage Object with Calling Listener Stored
      * @return true if Calling Event should be canceld
      * */
-    boolean handleEvents(EventStorage eventStorage);
+    <T> T handleEvents(EventStorage eventStorage);
     void handleCommands(Player player, String... args);
-    void finishSetup();
+    boolean finishSetup();
 
     boolean setupComplete();
 

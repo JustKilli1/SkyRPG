@@ -1,5 +1,7 @@
 package net.marscraft.skyrpg.base;
 
+import net.marscraft.skyrpg.commands.CommandTest;
+import net.marscraft.skyrpg.module.customitems.ModuleCustomItems;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.configmanager.ConfigManager;
@@ -10,6 +12,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 public final class Main extends JavaPlugin {
 
     private LogManager logger;
@@ -19,7 +23,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         logger = new LogManager(this, "Main");
-        logger.info("§2Loading Configs...");
+        logger.info("Loading Configs...");
         loadConfigs();
         logger.info("Configs loaded.");
 
@@ -53,6 +57,7 @@ public final class Main extends JavaPlugin {
     }
     private void registerCommands() {
         //getCommand("mcquest").setExecutor(new MCQuestCommand(logger, sql, messageConfig, this));
+        getCommand("test").setExecutor(new CommandTest());
 
     }
 
@@ -63,8 +68,13 @@ public final class Main extends JavaPlugin {
 
     private boolean loadModules() {
 
-        ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig);
         ModuleRegions moduleRegions = new ModuleRegions(this, mysqlConfig, messageConfig);
+        moduleRegions.onModuleEnable();
+        ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig, Arrays.asList(moduleRegions));
+        moduleCustomMobs.onModuleEnable();
+        ModuleCustomItems moduleCustomItems = new ModuleCustomItems(this, mysqlConfig, messageConfig);
+        moduleCustomItems.onModuleEnable();
+
         return true;
     }
 

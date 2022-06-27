@@ -6,7 +6,7 @@
 
     <groupId>net.marscraft</groupId>
     <artifactId>SkyRPG</artifactId>
-    <version>A-1.0</version>
+    <version>A-2.1</version>
     <packaging>jar</packaging>
 
     <name>SkyRPG</name>
@@ -71,6 +71,12 @@
             <artifactId>spigot-api</artifactId>
             <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

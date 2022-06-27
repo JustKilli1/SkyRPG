@@ -4,13 +4,14 @@ import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvCreateMob;
+import net.marscraft.skyrpg.module.custommobs.inventory.createinventory.InvSelectMobType;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SetupCustomMob implements ISetup {
+public class SetupCreateCustomMob implements ISetup {
 
     private static Map<UUID, MobHostile> setupMobs = new HashMap<>();
     private final ILogManager logger;
@@ -30,7 +31,7 @@ public class SetupCustomMob implements ISetup {
     private int mobId;
     private MessagesCustomMobs messages;
 
-    public SetupCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
+    public SetupCreateCustomMob(ILogManager logger, MessagesCustomMobs messages, DBAccessLayerCustomMobs sql, int mobId, String mobName) {
         this.logger = logger;
         this.messages = messages;
         this.mobName = mobName;
@@ -40,14 +41,14 @@ public class SetupCustomMob implements ISetup {
     }
 
     @Override
-    public boolean handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         InventoryClickEvent invClickEvent = eventStorage.getInventoryClickEvent();
         if(invClickEvent != null) return handleInvClickEvent(eventStorage, invClickEvent);
 
         AsyncPlayerChatEvent asyncChatEvent = eventStorage.getAsyncPlayerChatEvent();
         if(asyncChatEvent != null) return handleAsyncChatEvent(asyncChatEvent);
-        return false;
+        return null;
     }
 
     @Override
@@ -56,18 +57,18 @@ public class SetupCustomMob implements ISetup {
         if (!setupMobs.containsKey(player.getUniqueId())) {
             setupMobs.put(player.getUniqueId(), mob);
         }
-        IGuiInventory iGuiInventory = new InvCreateMob(logger, messages, mob);
+        IGuiInventory iGuiInventory = new InvSelectMobType(logger, messages, mob);
         iGuiInventory.open(player);
     }
 
     @Override
-    public void finishSetup() {
+    public boolean finishSetup() {
         if(!setupComplete()) {
             messages.sendCreateCustomMobErrorMessage();
-            return;
+            return false;
         }
         sql.insertCustomMob(hostileMob);
-        return;
+        return true;
     }
 
     @Override
@@ -78,29 +79,39 @@ public class SetupCustomMob implements ISetup {
         return hostileMob.setupComplete();
     }
 
-    private boolean handleInvClickEvent(EventStorage eventStorage, InventoryClickEvent event) {
+    /**
+     * Handles InventoryClickEvent
+     * @param eventStorage Storage with calling Event
+     * @param event Calling Event
+     */
+    private <T> T handleInvClickEvent(EventStorage eventStorage, InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(!setupMobs.containsKey(player.getUniqueId())) return false;
+        if(!setupMobs.containsKey(player.getUniqueId())) return null;
         MobHostile target = setupMobs.get(player.getUniqueId());
 
 
         String invTitle = event.getView().getTitle();
         IGuiInventory setupInv = getInventory(invTitle, target);
-        if(setupInv == null) return false;
-        setupInv.handleClickEvent(eventStorage);
+        if(setupInv == null) return null;
+        setupInv.handleEvents(eventStorage);
 
         event.setCancelled(true);
-        return true;
+        if(event.getCurrentItem().getType() != Material.BLACK_STAINED_GLASS_PANE) messages.sendEnterBaseHealthMessage();
+        return null;
     }
 
-    private boolean handleAsyncChatEvent(AsyncPlayerChatEvent event) {
+    /**
+     * Handles AsyncPlayerChatEvent
+     * @param event Calling Event
+     */
+    private <T> T handleAsyncChatEvent(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
-        if(!setupMobs.containsKey(player.getUniqueId())) return false;
+        if(!setupMobs.containsKey(player.getUniqueId())) return null;
         hostileMob = setupMobs.get(player.getUniqueId());
         if(hostileMob.getType() == null) {
             setupMobs.remove(player.getUniqueId());
-            return false;
+            return null;
         }
         String message = event.getMessage();
         event.setCancelled(true);
@@ -108,46 +119,49 @@ public class SetupCustomMob implements ISetup {
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendSetupCancelledMessage();
-            return true;
+            return null;
         }
         // Does things when maxHealth is not set
-        if(hostileMob.getMaxHealth() <= 0) {
+        if(hostileMob.getBaseHealth() <= 0) {
             double maxHealth = Utils.doubleFromStr(message);
             if(maxHealth <= 0) {
                 messages.sendInvalidMaxHealthMessage(message);
-                return false;
+                return null;
             }
-            hostileMob.setMaxHealth(maxHealth);
-            messages.sendMaxHealthSetMessage(maxHealth);
-            return true;
-        }// Does things when maxHealth is set but level not
-        else if(hostileMob.getLevel() <= 0) {
-            int level = Utils.intFromStr(message);
-            if(level <= 0) {
-                messages.sendInvalidLevelMessage(message);
-                return false;
+            hostileMob.setBaseHealth(maxHealth);
+            messages.sendBaseHealthSetMessage(maxHealth);
+            messages.sendEnterSpawnChanceMessage();
+
+            return null;
+        }// Does things when maxHealth is set but spawnChance not
+        else if(hostileMob.getSpawnChance() <= 0) {
+            double spawnChance = Utils.doubleFromStr(message);
+            if(spawnChance <= 0 || spawnChance > 100) {
+                messages.sendInvalidSpawnChanceMessage(message);
+                return null;
             }
-            hostileMob.setLevel(level);
-            if(!hostileMob.setupComplete()) {
+            hostileMob.setSpawnChance(spawnChance);
+            messages.sendSpawnChanceSetMessage(spawnChance);
+            if(!finishSetup()) {
                 messages.sendCreateCustomMobErrorMessage();
-                setupMobs.remove(player.getUniqueId());
-                return false;
+                return null;
             }
-            messages.sendLevelSetMessage(level);
-            finishSetup();
             setupMobs.remove(player.getUniqueId());
             ModuleCustomMobs.removeSetup(player.getUniqueId());
             messages.sendMobBaseSetupCompleteMessage();
-            return true;
+            return null;
         }
-        return false;
+        return null;
     }
 
+    /**
+     * Gets GuiInventory matching invTitle
+     */
     private IGuiInventory getInventory(String invTitle, MobHostile mob) {
 
-        InvCreateMob invCreateMob = new InvCreateMob(logger, messages, mob);
+        InvSelectMobType invSelectMobType = new InvSelectMobType(logger, messages, mob);
 
-        if (invCreateMob.getTitle().equals(invTitle)) return invCreateMob;
+        if (invSelectMobType.getTitle().equals(invTitle)) return invSelectMobType;
         else return null;
 
     }

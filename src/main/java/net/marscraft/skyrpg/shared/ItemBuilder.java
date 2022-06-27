@@ -23,6 +23,12 @@ public class ItemBuilder {
         itemStack = new ItemStack(mat);
         itemMeta = itemStack.getItemMeta();
     }
+
+    public ItemBuilder(ItemStack itemStack) {
+        this.itemStack = itemStack;
+        itemMeta = this.itemStack.getItemMeta();
+    }
+
     public ItemBuilder setDisplayname(String displayName) {
         itemMeta.setDisplayName(displayName);
         return this;
@@ -59,6 +65,10 @@ public class ItemBuilder {
      */
     public ItemBuilder addPersistantDataToItemStack(NamespacedKey key, String value) {
         itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
+        return this;
+    }
+    public ItemBuilder setMaterial(Material mat) {
+        itemStack.setType(mat);
         return this;
     }
     public ItemStack build(){

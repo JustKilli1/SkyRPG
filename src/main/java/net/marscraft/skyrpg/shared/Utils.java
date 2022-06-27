@@ -3,8 +3,11 @@ package net.marscraft.skyrpg.shared;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -19,16 +22,16 @@ public class Utils {
 
     /**
      * Gets Command from String[] args starting at: startingPoint
-     * @param args Command
-     * @param startingPoint Index where to start in args Array
-     * @return String from String[] args
+     * @param target Command
+     * @param startIndex Index where to start in target Array
+     * @return String from String[] target
      * */
-    public static String getStrFromArray(String[] args, int startingPoint) {
+    public static String getStrFromArray(String[] target, int startIndex) {
         String tmpStr = "";
-        for(int i = startingPoint; i < args.length; i++) {
-            String arg = args[i];
-            if(i == startingPoint) tmpStr = arg;
-            else tmpStr += " " + arg;
+        for(int i = startIndex; i < target.length; i++) {
+            String str = target[i];
+            if(i == startIndex) tmpStr = str;
+            else tmpStr += " " + str;
         }
         return tmpStr;
     }
@@ -38,7 +41,7 @@ public class Utils {
      * @param item ItemStack that gets converted to String
      * @return ItemStack as String
      * */
-    public static @Nullable String itemStackToBase64(@Nullable ItemStack item) throws IllegalStateException {
+    public static @Nullable String itemStackToBase64(@Nullable ItemStack item) {
         if(item == null) return null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -52,13 +55,18 @@ public class Utils {
             return null;
         }
     }
-
+    public static double getRandomOffset() {
+        double random = Math.random();
+        if (Math.random() > 0.5) random *= -1;
+        return random;
+    }
     /**
      * Converts String to ItemStack
      * @param iStackAsStr ItemStack as String that gets Converted to ItemStack
      * @return ItemStack from String
      * */
-    public static ItemStack itemStackFromBase64(String iStackAsStr){
+    public static @Nullable ItemStack itemStackFromBase64(@Nullable String iStackAsStr) {
+        if(iStackAsStr == null || iStackAsStr.equalsIgnoreCase("null")) return null;
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(iStackAsStr));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -71,7 +79,32 @@ public class Utils {
         }
     }
 
+    public static ItemStack removePersistantDataFromItem(ItemStack item, NamespacedKey key, PersistentDataType type) {
+        if(item == null) return null;
+        ItemMeta itemMeta = item.getItemMeta();
+        if(itemMeta.getPersistentDataContainer().has(key, type)) itemMeta.getPersistentDataContainer().remove(key);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
 
+    public static int getItemIndexInInv(Inventory inv, ItemStack item) {
+        ItemStack[] invContents = inv.getContents();
+
+        for(int i = 0; i < invContents.length; i++) {
+            ItemStack invItem = invContents[i];
+            if(invItem.equals(item)) return i;
+        }
+        return -1;
+    }
+
+    public static int getItemIndexInInv(ItemStack[] invContents, ItemStack item) {
+        for(int i = 0; i < invContents.length; i++) {
+            ItemStack invItem = invContents[i];
+            if(invItem == null) continue;
+            if(invItem.equals(item)) return i;
+        }
+        return -1;
+    }
 
     /**
      * Goes through given Inventory and checks if Inventory has enough space
