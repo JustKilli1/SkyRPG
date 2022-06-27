@@ -12,7 +12,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public final class Main extends JavaPlugin {
@@ -73,6 +72,8 @@ public final class Main extends JavaPlugin {
         moduleRegions.onModuleEnable();
         ModuleCustomMobs moduleCustomMobs = new ModuleCustomMobs(this, mysqlConfig, messageConfig, Arrays.asList(moduleRegions));
         moduleCustomMobs.onModuleEnable();
+        ModuleCustomItems moduleCustomItems = new ModuleCustomItems(this, mysqlConfig, messageConfig);
+        moduleCustomItems.onModuleEnable();
 
         return true;
     }

@@ -43,21 +43,21 @@ public class SetupMarsRegion implements ISetup {
 
 
     @Override
-    public boolean handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         return handlePlayerInteractEvent(eventStorage);
 
     }
 
-    private boolean handlePlayerInteractEvent(EventStorage eventStorage) {
+    private <T> T handlePlayerInteractEvent(EventStorage eventStorage) {
         PlayerInteractEvent event = eventStorage.getPlayerInteractEvent();
         player = event.getPlayer();
         Block block = event.getClickedBlock();
-        if (block == null)  return false;
-        if (!boundarySetup.containsKey(player.getUniqueId())) return false;
+        if (block == null)  return null;
+        if (!boundarySetup.containsKey(player.getUniqueId())) return null;
         bound = boundarySetup.get(player.getUniqueId());
 
-        if(event.getAction() != Action.LEFT_CLICK_BLOCK) return false;
+        if(event.getAction() != Action.LEFT_CLICK_BLOCK) return null;
 
         if(!bound.isLoc1Set()) {
             bound.setLoc1(block.getLocation());
@@ -69,10 +69,10 @@ public class SetupMarsRegion implements ISetup {
             region.setBound(bound);
             messages.sendMessageLocSet(2);
             finishSetup();
-            return true;
+            return null;
         }
         event.setCancelled(true);
-        return false;
+        return null;
     }
 
     @Override

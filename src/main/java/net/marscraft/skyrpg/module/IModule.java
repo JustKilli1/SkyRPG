@@ -8,7 +8,12 @@ public interface IModule {
 
     void onModuleEnable();
     void onModuleDisable();
+
+    /**
+     * Module Reload logic
+     * */
     void reloadModule();
+
     /**
      * Handles ListenerCalls. Event gets Stored in Object EventStorage storage
      * @param storage Object with calling Event

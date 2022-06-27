@@ -61,7 +61,7 @@ public class InvSelectMobType extends MarsInventory implements IGuiInventory {
 
         InventoryClickEvent event = eventStorage.getInventoryClickEvent();
         if(event == null) {
-            logger.warn("InventoryClickEvent is null. Class: InvCreateMob, Method: handleClickEvent");
+            logger.warn("InventoryClickEvent is null.");
             return null;
         }
         Player player = (Player) event.getWhoClicked();

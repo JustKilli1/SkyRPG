@@ -32,12 +32,12 @@ public class SetupCustomMobName implements ISetup {
 
 
     @Override
-    public boolean handleEvents(EventStorage eventStorage) {
+    public <T> T handleEvents(EventStorage eventStorage) {
 
         AsyncPlayerChatEvent playerChatEvent = eventStorage.getAsyncPlayerChatEvent();
         if(playerChatEvent != null) handleAsyncChatEvent(eventStorage, playerChatEvent);
 
-        return false;
+        return null;
     }
 
     @Override

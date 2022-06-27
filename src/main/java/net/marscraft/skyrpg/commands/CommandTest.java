@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandTest implements CommandExecutor {
@@ -20,8 +21,6 @@ public class CommandTest implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-
-
         /*
         * Einzigartig(Siehe 1)/Legendär/Episch/Normal/Ungewöhnlich
         * 100 Schaden
@@ -45,8 +44,6 @@ public class CommandTest implements CommandExecutor {
         *
         * 1: Einzigartige waffe die speziell erstellt wurde über create CustomItem command.
         * */
-
-
         String[] lore = new String[14];
         lore[0] = "§6§lLegendär";
         lore[1] = "§c100 §aSchaden";

@@ -64,35 +64,39 @@ public class InvFunctionMobDetails extends InvFunction {
         NamespacedKey keyDetailItem = new NamespacedKey(Main.getPlugin(Main.class), "detailItem");
 
         ItemStack changeName = new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE)
-                .setDisplayname("§cChange Name")
-                .setLore("§aName: §c" + hostileMob.getName())
-                .addPersistantDataToItemStack(keyDetailItem, "name")
-                .build()
-                ;
+                               .setDisplayname("§cChange Name")
+                               .setLore("§aName: §c" + hostileMob.getName())
+                               .addPersistantDataToItemStack(keyDetailItem, "name")
+                               .build()
+                               ;
+
         ItemStack changeBaseHealth = new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE)
-                .setDisplayname("§cChange Base Health")
-                .setLore("§aBase Health: §c" + hostileMob.getBaseHealth())
-                .addPersistantDataToItemStack(keyDetailItem, "baseHealth")
-                .build()
-                ;
+                                     .setDisplayname("§cChange Base Health")
+                                     .setLore("§aBase Health: §c" + hostileMob.getBaseHealth())
+                                     .addPersistantDataToItemStack(keyDetailItem, "baseHealth")
+                                     .build()
+                                     ;
+
         ItemStack changeSpawnChance = new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE)
-                .setDisplayname("§cChange Spawn Chance")
-                .setLore("§aSpawn Chance: §c" + hostileMob.getSpawnChance())
-                .addPersistantDataToItemStack(keyDetailItem, "spawnChance")
-                .build()
-                ;
+                                      .setDisplayname("§cChange Spawn Chance")
+                                      .setLore("§aSpawn Chance: §c" + hostileMob.getSpawnChance())
+                                      .addPersistantDataToItemStack(keyDetailItem, "spawnChance")
+                                      .build()
+                                      ;
+
         ItemStack changeItems = new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE)
-                .setDisplayname("§cItems")
-                .setLore("§aOpens Mob Inventory")
-                .addPersistantDataToItemStack(keyDetailItem, "items")
-                .build()
-                ;
+                                .setDisplayname("§cItems")
+                                .setLore("§aOpens Mob Inventory")
+                                .addPersistantDataToItemStack(keyDetailItem, "items")
+                                .build()
+                                ;
+
         ItemStack changeLoot = new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE)
-                .setDisplayname("§cLoot")
-                .setLore("§aOpens Mob Loot Inventory")
-                .addPersistantDataToItemStack(keyDetailItem, "loot")
-                .build()
-                ;
+                               .setDisplayname("§cLoot")
+                               .setLore("§aOpens Mob Loot Inventory")
+                               .addPersistantDataToItemStack(keyDetailItem, "loot")
+                               .build()
+                               ;
 
         items.add(changeName);
         items.add(changeBaseHealth);
