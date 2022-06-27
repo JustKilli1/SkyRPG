@@ -21,15 +21,6 @@ public class CommandTest implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        player.sendMessage("Hello World");
-/*        NamespacedKey keyMobItem = new NamespacedKey(Main.getPlugin(Main.class), "mobItem");
-        Inventory inv =  Bukkit.createInventory(null, InventoryType.PLAYER, "Mob Items");
-        player.openInventory(inv);
-        ItemStack item = new ItemBuilder(Material.DIAMOND_SWORD).addPersistantDataToItemStack(keyMobItem, "mainItem").build();
-        String itemStr = Utils.itemStackToBase64(item);
-        ItemStack itemFromStr = Utils.itemStackFromBase64(itemStr);
-        player.getInventory().addItem(itemFromStr);*/
-
         /*
         * Einzigartig(Siehe 1)/Legendär/Episch/Normal/Ungewöhnlich
         * 100 Schaden
@@ -53,28 +44,26 @@ public class CommandTest implements CommandExecutor {
         *
         * 1: Einzigartige waffe die speziell erstellt wurde über create CustomItem command.
         * */
+        String[] lore = new String[14];
+        lore[0] = "§6§lLegendär";
+        lore[1] = "§c100 §aSchaden";
+        lore[2] = "";
+        lore[3] = "§a+10% Beute";
+        lore[4] = "§a+10% XP";
+        lore[5] = " ";
+        lore[6] = "§c§lExplosiver Schlag";
+        lore[7] = "§aHat eine §c40% §aChance beim Schlagen";
+        lore[8] = "§aeine Explosion zu verursachen";
+        lore[9] = "§adie §c30 §aSchaden an Gegnern in der Umgebung anrichtet";
+        lore[10] = " ";
+        lore[11] = "§c§lLebenzsentzug";
+        lore[12] = "§aHat eine §c70% §aChance dem gegner §c10 §aLeben zu entziehen.";
+        lore[13] = "§aDer träger erhält §c5 §aLeben zurück.";
 
 
-        String[] lore = new String[13];
-        lore[0] = "§c100 §aSchaden";
-        lore[1] = "";
-        lore[2] = "§a+10% Beute";
-        lore[3] = "§a+10% XP";
-        lore[4] = " ";
-        lore[5] = "§c§lExplosiver Schlag";
-        lore[6] = "§aHat eine §c40% §aChance beim Schlagen";
-        lore[7] = "§aeine Explosion zu verursachen";
-        lore[8] = "§adie §c30 §aSchaden an Gegnern in der Umgebung anrichtet";
-        lore[9] = " ";
-        lore[10] = "§c§lLebenzsentzug";
-        lore[11] = "§aHat eine §c40% §aChance dem gegner §c10 §aLeben zu entziehen.";
-        lore[12] = "§aDer träger erhält §c5 §aLeben zurück.";
-
-
-        ItemStack testCustomItem = new ItemBuilder(Material.DIAMOND_SWORD).setDisplayname("§6§lZerstörer der Welten").setLore(lore).build();
+        ItemStack testCustomItem = new ItemBuilder(Material.DIAMOND_SWORD).setDisplayname("§6§lTest Item").setLore(lore).build();
 
         player.getInventory().addItem(testCustomItem);
-
 
         return false;
     }
