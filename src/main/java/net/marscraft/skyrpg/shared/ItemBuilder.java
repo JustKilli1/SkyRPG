@@ -67,6 +67,10 @@ public class ItemBuilder {
         itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
         return this;
     }
+    public ItemBuilder setMaterial(Material mat) {
+        itemStack.setType(mat);
+        return this;
+    }
     public ItemStack build(){
         itemStack.setItemMeta(itemMeta);
         return itemStack;
