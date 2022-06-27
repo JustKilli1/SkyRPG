@@ -11,6 +11,7 @@ import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -95,6 +96,7 @@ public class SetupCreateCustomMob implements ISetup {
         setupInv.handleEvents(eventStorage);
 
         event.setCancelled(true);
+        if(event.getCurrentItem().getType() != Material.BLACK_STAINED_GLASS_PANE) messages.sendEnterBaseHealthMessage();
         return null;
     }
 

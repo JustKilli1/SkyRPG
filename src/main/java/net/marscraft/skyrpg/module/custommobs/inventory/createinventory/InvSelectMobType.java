@@ -79,7 +79,6 @@ public class InvSelectMobType extends MarsInventory implements IGuiInventory {
             mob.setType(type);
             player.closeInventory();
             messages.sendMobTypeSetMessage();
-            messages.sendEnterBaseHealthMessage();
             return (T) mob;
         }
         return null;

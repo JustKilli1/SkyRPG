@@ -10,7 +10,7 @@ website: marscraft.net
 commands:
   test:
     description: Test Command
-  marsregion:
+  marsRegion:
     description: MarsRegion Command
     aliases:
       - mr

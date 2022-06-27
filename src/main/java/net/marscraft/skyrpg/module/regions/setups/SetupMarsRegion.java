@@ -63,7 +63,7 @@ public class SetupMarsRegion implements ISetup {
             bound.setLoc1(block.getLocation());
             region.setBound(bound);
             messages.sendMessageLocSet(1);
-            return true;
+            return null;
         } else if(bound.isLoc1Set()){
             bound.setLoc2(block.getLocation());
             region.setBound(bound);
