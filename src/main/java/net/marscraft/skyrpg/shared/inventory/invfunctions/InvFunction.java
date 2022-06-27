@@ -30,4 +30,22 @@ public class InvFunction {
     protected int getStartIndex(int row) { return (row * 9) - 9; }
 
     protected int getEndIndex(int row) { return (row * 9) - 1; }
+
+    public ItemStack buildFilterItem(String displayName, String filterName, boolean filterActive, String... lore) {
+        NamespacedKey keyFilterName = new NamespacedKey(Main.getPlugin(Main.class), "filterName");
+        NamespacedKey keyFilterActive = new NamespacedKey(Main.getPlugin(Main.class), "filterActive");
+
+        ItemBuilder filterItem = new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE)
+                .setDisplayname(displayName)
+                .setLore(lore)
+                .addPersistantDataToItemStack(keyFilterName, filterName);
+
+        if(filterActive) {
+            filterItem.setMaterial(Material.GREEN_STAINED_GLASS_PANE)
+                    .addPersistantDataToItemStack(keyFilterActive, "Active")
+            ;
+        }
+        return filterItem.build();
+    }
+
 }

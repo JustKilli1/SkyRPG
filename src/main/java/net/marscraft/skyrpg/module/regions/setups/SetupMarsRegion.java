@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.module.regions.setups;
 
+import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
@@ -24,17 +25,17 @@ public class SetupMarsRegion implements ISetup {
     private final ILogManager logger;
     private final DBHandlerRegions dbHandler;
     private final DBAccessLayerRegions sql;
-    private MessageManager messageManager;
+    private MessagesRegions messages;
     private String regionName;
     private Region region;
     private Bound bound;
     private Player player;
 
-    public SetupMarsRegion(ILogManager logger, MessageManager messageManager, String regionName, DBAccessLayerRegions sql) {
+    public SetupMarsRegion(ILogManager logger, String regionName, DBAccessLayerRegions sql, MessagesRegions messages) {
         this.logger = logger;
-        this.messageManager = messageManager;
         this.regionName = regionName;
         this.sql = sql;
+        this.messages = messages;
         dbHandler = new DBHandlerRegions(this.logger, this.sql);
         bound = new Bound();
         region = new Region(logger, this.regionName, bound);
@@ -51,7 +52,6 @@ public class SetupMarsRegion implements ISetup {
     private boolean handlePlayerInteractEvent(EventStorage eventStorage) {
         PlayerInteractEvent event = eventStorage.getPlayerInteractEvent();
         player = event.getPlayer();
-;
         Block block = event.getClickedBlock();
         if (block == null)  return false;
         if (!boundarySetup.containsKey(player.getUniqueId())) return false;
@@ -62,12 +62,12 @@ public class SetupMarsRegion implements ISetup {
         if(!bound.isLoc1Set()) {
             bound.setLoc1(block.getLocation());
             region.setBound(bound);
-            messageManager.sendPlayerMessage("&aLocation 1 Set");
+            messages.sendMessageLocSet(1);
             return true;
         } else if(bound.isLoc1Set()){
             bound.setLoc2(block.getLocation());
             region.setBound(bound);
-            messageManager.sendPlayerMessage("&aLocation 2 Set");
+            messages.sendMessageLocSet(2);
             finishSetup();
             return true;
         }
@@ -78,13 +78,13 @@ public class SetupMarsRegion implements ISetup {
     @Override
     public void handleCommands(Player player, String... args) {
 
-        messageManager.sendPlayerMessage("&aBitte die Region markieren");
         this.player = player;
-
         if(boundarySetup.containsKey(player.getUniqueId())) return;
 
         bound = new Bound();
         boundarySetup.put(player.getUniqueId(), bound);
+
+        messages.sendSelectRegion();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class SetupMarsRegion implements ISetup {
         sql.insertRegion(region);
         boundarySetup.remove(player.getUniqueId());
         ModuleRegions.removeSetup(player.getUniqueId());
-        messageManager.sendPlayerMessage("&aRegion &c" + regionName + " &awurde erstellt. ");
+        messages.sendRegionCreated(regionName);
         return true;
     }
 
