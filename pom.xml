@@ -6,7 +6,7 @@
 
     <groupId>net.marscraft</groupId>
     <artifactId>SkyRPG</artifactId>
-    <version>A-2.1.1</version>
+    <version>A-2.1.2</version>
     <packaging>jar</packaging>
 
     <name>SkyRPG</name>

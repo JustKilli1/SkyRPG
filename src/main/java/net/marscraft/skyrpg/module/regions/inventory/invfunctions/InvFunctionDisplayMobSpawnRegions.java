@@ -46,6 +46,7 @@ public class InvFunctionDisplayMobSpawnRegions extends InvFunction {
 
     private ItemStack getRegionDisplayItem(MobSpawnRegion mobSpawnRegion) {
         NamespacedKey mobSpawnRegionId = new NamespacedKey(Main.getPlugin(Main.class), "mobSpawnRegionId");
+        NamespacedKey regionId = new NamespacedKey(Main.getPlugin(Main.class), "regionId");
         ItemStack displayItem = new ItemBuilder(Material.MAP)
                 .setDisplayname("§c" + mobSpawnRegion.getRegion().getName())
                 .setLore(
@@ -65,6 +66,7 @@ public class InvFunctionDisplayMobSpawnRegions extends InvFunction {
                         "§aRechtsklick zum teleportieren"
                 )
                 .addPersistantDataToItemStack(mobSpawnRegionId, mobSpawnRegion.getId())
+                .addPersistantDataToItemStack(regionId, mobSpawnRegion.getRegion().getId())
                 .build()
                 ;
         return displayItem;
