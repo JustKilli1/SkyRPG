@@ -1,6 +1,7 @@
 package net.marscraft.skyrpg.module.regions.commands;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
@@ -10,7 +11,6 @@ import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
-import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import net.marscraft.skyrpg.module.regions.setups.SetupMarsRegion;
 import org.bukkit.command.Command;
@@ -26,14 +26,16 @@ public class CommandMarsRegion implements CommandExecutor {
     private IConfigManager configManager;
     private DBHandlerRegions dbHandler;
     private DBAccessLayerRegions sql;
+    DBHandlerCustomMobs dbHandlerCustomMobs;
 
 
-    public CommandMarsRegion(ILogManager logger, Main plugin, IConfigManager configManager, DBAccessLayerRegions sql) {
+    public CommandMarsRegion(ILogManager logger, Main plugin, IConfigManager configManager, DBAccessLayerRegions sql, DBHandlerCustomMobs dbHandlerCustomMobs) {
         this.logger = logger;
         this.plugin = plugin;
         this.configManager = configManager;
         this.sql = sql;
-        dbHandler = new DBHandlerRegions(this.logger, this.sql);
+        this.dbHandlerCustomMobs = dbHandlerCustomMobs;
+        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class CommandMarsRegion implements CommandExecutor {
                     return true;
                 }
                 String regionName = Utils.getStrFromArray(args, 1);
-                ISetup setup = new SetupMarsRegion(logger, regionName, sql, messages);
+                ISetup setup = new SetupMarsRegion(logger, regionName, sql, messages, dbHandlerCustomMobs);
                 ModuleRegions.addSetup(player.getUniqueId(), setup);
                 setup.handleCommands(player, args);
                 break;
@@ -77,5 +79,6 @@ public class CommandMarsRegion implements CommandExecutor {
     private void showRegionOverview(Player player) {
         IGuiInventory inv = new InvRegions(logger, dbHandler);
         inv.open(player);
+        ModuleRegions.addInv(player.getUniqueId(), inv);
     }
 }

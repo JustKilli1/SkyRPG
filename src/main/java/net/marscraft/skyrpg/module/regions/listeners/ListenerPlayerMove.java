@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.module.regions.listeners;
 
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
@@ -20,11 +21,11 @@ public class ListenerPlayerMove implements Listener {
     private DBAccessLayerRegions sql;
     private DBHandlerRegions dbHandler;
 
-    public ListenerPlayerMove(ILogManager logger, IConfigManager configManager, DBAccessLayerRegions sql) {
+    public ListenerPlayerMove(ILogManager logger, IConfigManager configManager, DBAccessLayerRegions sql, DBHandlerCustomMobs dbHandlerCustomMobs) {
         this.logger = logger;
         this.configManager = configManager;
         this.sql = sql;
-        dbHandler = new DBHandlerRegions(this.logger, this.sql);
+        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs);
     }
 
     @EventHandler

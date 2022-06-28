@@ -4,13 +4,18 @@ import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.IModule;
 import net.marscraft.skyrpg.module.ModuleMode;
 import net.marscraft.skyrpg.module.ModuleState;
+import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.commands.CommandMarsRegion;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
+import net.marscraft.skyrpg.module.regions.listeners.ListenerInvClick;
+import net.marscraft.skyrpg.module.regions.listeners.ListenerInvClose;
 import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerInteract;
 import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerMove;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
+import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.logmanager.LogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
@@ -28,19 +33,23 @@ public class ModuleRegions implements IModule {
     private static final String moduleName = "Regions";
     private static final String moduleDescription = "Creates Region between two locations";
     private static Map<UUID, ISetup> setups = new HashMap<>();
+    private static Map<UUID, IGuiInventory> invs = new HashMap<>();
     private final ILogManager logger;
     private ModuleState moduleState;
     private ModuleMode moduleMode;
     private Main plugin;
     private DBAccessLayerRegions sql;
     private DBHandlerRegions dbHandler;
+    DBHandlerCustomMobs dbHandlerCustomMobs;
     private IConfigManager messagesConfig;
 
     public ModuleRegions(Main plugin, IConfigManager mysqlConfig, IConfigManager messagesConfig) {
         this.plugin = plugin;
         logger = new LogManager(this.plugin, moduleName);
         this.sql = new DBAccessLayerRegions(logger, mysqlConfig);
-        dbHandler = new DBHandlerRegions(logger, this.sql);
+        DBAccessLayerCustomMobs sqlCustomMobs = new DBAccessLayerCustomMobs(logger, mysqlConfig);
+        dbHandlerCustomMobs = new DBHandlerCustomMobs(logger, sqlCustomMobs);
+        dbHandler = new DBHandlerRegions(logger, this.sql, dbHandlerCustomMobs);
         this.messagesConfig = messagesConfig;
 
     }
@@ -81,16 +90,20 @@ public class ModuleRegions implements IModule {
     }
 
     private boolean createDatabaseTables() {
-        return sql.createTableRegions();
+        if(!sql.createTableRegions()) return false;
+        if(!sql.createTableMobSpawnRegion()) return false;
+        return sql.createTableSpawnSystemMobController();
 
     }
     private void registerListener() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(new ListenerPlayerInteract(logger, messagesConfig), plugin);
-        pluginManager.registerEvents(new ListenerPlayerMove(logger, messagesConfig, sql), plugin);
+        pluginManager.registerEvents(new ListenerPlayerMove(logger, messagesConfig, sql, dbHandlerCustomMobs), plugin);
+        pluginManager.registerEvents(new ListenerInvClick(logger), plugin);
+        pluginManager.registerEvents(new ListenerInvClose(logger), plugin);
     }
     private void registerCommands() {
-        plugin.getCommand("marsregion").setExecutor(new CommandMarsRegion(logger, plugin, messagesConfig, sql));
+        plugin.getCommand("marsregion").setExecutor(new CommandMarsRegion(logger, plugin, messagesConfig, sql, dbHandlerCustomMobs));
     }
 
     @Override
@@ -148,5 +161,10 @@ public class ModuleRegions implements IModule {
     public static void setSetups(Map<UUID, ISetup> setups) { ModuleRegions.setups = setups; }
     public static void addSetup(UUID key, ISetup value) { setups.put(key, value); }
     public static void removeSetup(UUID key) { setups.remove(key); }
+
+    public static Map<UUID, IGuiInventory> getInvs() { return invs; }
+    public static void setInvs(Map<UUID, IGuiInventory> invs) { ModuleRegions.invs = invs; }
+    public static void addInv(UUID key, IGuiInventory value) { invs.put(key, value); }
+    public static void removeInv(UUID key) { invs.remove(key); }
 
 }

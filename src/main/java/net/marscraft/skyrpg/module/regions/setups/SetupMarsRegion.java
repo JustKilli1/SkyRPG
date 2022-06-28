@@ -1,12 +1,12 @@
 package net.marscraft.skyrpg.module.regions.setups;
 
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
-import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
 import net.marscraft.skyrpg.module.regions.region.Bound;
 import net.marscraft.skyrpg.module.regions.region.Region;
 import net.marscraft.skyrpg.shared.setups.ISetup;
@@ -31,12 +31,12 @@ public class SetupMarsRegion implements ISetup {
     private Bound bound;
     private Player player;
 
-    public SetupMarsRegion(ILogManager logger, String regionName, DBAccessLayerRegions sql, MessagesRegions messages) {
+    public SetupMarsRegion(ILogManager logger, String regionName, DBAccessLayerRegions sql, MessagesRegions messages, DBHandlerCustomMobs dbHandlerCustomMobs) {
         this.logger = logger;
         this.regionName = regionName;
         this.sql = sql;
         this.messages = messages;
-        dbHandler = new DBHandlerRegions(this.logger, this.sql);
+        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs);
         bound = new Bound();
         region = new Region(logger, this.regionName, bound);
     }

@@ -33,6 +33,28 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         return executeSQLRequest(sqlQuery);
     }
 
+    public boolean createTableSpawnSystemMobController() {
+        String sqlQuery = "CREATE TABLE IF NOT EXISTS SpawnSystemMobController (" +
+                "ID INT NOT NULL, " +
+                "MobSpawnRegionId INT NOT NULL," +
+                "MobId INT NOT NULL," +
+                "SpawnChance DOUBLE DEFAULT 0.0," +
+                "PRIMARY KEY (ID)" +
+                ")";
+        return executeSQLRequest(sqlQuery);
+    }
+
+    public boolean createTableMobSpawnRegion() {
+        String sqlQuery = "CREATE TABLE IF NOT EXISTS MobSpawnRegion (" +
+                "ID INT NOT NULL, " +
+                "RegionId INT NOT NULL," +
+                "MaxMobs INT," +
+                "Active BOOLEAN DEFAULT false," +
+                "PRIMARY KEY (ID)" +
+                ")";
+        return executeSQLRequest(sqlQuery);
+    }
+
 
     /*
      * Inserts
@@ -65,6 +87,26 @@ public class DBAccessLayerRegions extends DBAccessLayer {
 
     public ResultSet getAllRegions() {
         String sqlQuery = "SELECT * FROM Regions";
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getRegion(int regionID) {
+        String sqlQuery = "SELECT * FROM Regions WHERE ID=" + regionID;
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getAllMobSpawnRegions() {
+        String sqlQuery = "SELECT * FROM MobSpawnRegion";
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getMobSpawnRegion(int id) {
+        String sqlQuery = "SELECT * FROM MobSpawnRegion WHERE ID=" + id;
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getAllMobsInMobSpawnRegion(int mobSpawnRegionId) {
+        String sqlQuery = "SELECT * FROM SpawnSystemMobController WHERE MobSpawnRegionId=" + mobSpawnRegionId;
         return querySQLRequest(sqlQuery);
     }
 
