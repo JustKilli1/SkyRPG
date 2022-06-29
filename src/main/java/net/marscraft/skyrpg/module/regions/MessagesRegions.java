@@ -20,4 +20,9 @@ public class MessagesRegions extends MessageManager {
     public void sendRegionCommandCreateSyntaxError() { sendPlayerSyntaxError("mr create [RegionName]"); }
     public void sendRegionCommandSyntaxError() { sendPlayerSyntaxError("mr help"); }
 
+    public void sendEnterNewNameMessage() { sendPlayerMessage("Bitte neuen Namen eingeben");
+    }
+
+    public void sendRegionNameSetMessage(String newName) { sendPlayerMessage("Name der Region wurde zu &c" + newName + " &ageändert");
+    }
 }

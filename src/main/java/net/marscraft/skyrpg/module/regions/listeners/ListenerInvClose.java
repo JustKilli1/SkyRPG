@@ -20,7 +20,10 @@ public class ListenerInvClose implements Listener {
 
         Player player = (Player) event.getPlayer();
 
-        if(ModuleRegions.getInvs().containsKey(player.getUniqueId())) ModuleRegions.removeInv(player.getUniqueId());
+        if(ModuleRegions.getInvs().containsKey(player.getUniqueId())) {
+            ModuleRegions.removeInv(player.getUniqueId());
+
+        }
 
     }
 

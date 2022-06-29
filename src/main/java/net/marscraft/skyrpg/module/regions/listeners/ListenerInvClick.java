@@ -28,7 +28,6 @@ public class ListenerInvClick implements Listener {
         if(ModuleRegions.getInvs().containsKey(player.getUniqueId())) {
             IGuiInventory inv = ModuleRegions.getInvs().get(player.getUniqueId());
             inv.handleEvents(eventStorage);
-            ModuleRegions.addInv(player.getUniqueId(), inv);
         }
 
     }

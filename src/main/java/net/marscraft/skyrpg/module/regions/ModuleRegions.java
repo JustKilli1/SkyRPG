@@ -9,10 +9,7 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.commands.CommandMarsRegion;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerInvClick;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerInvClose;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerInteract;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerMove;
+import net.marscraft.skyrpg.module.regions.listeners.*;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
@@ -101,6 +98,7 @@ public class ModuleRegions implements IModule {
         pluginManager.registerEvents(new ListenerPlayerMove(logger, messagesConfig, sql, dbHandlerCustomMobs), plugin);
         pluginManager.registerEvents(new ListenerInvClick(logger), plugin);
         pluginManager.registerEvents(new ListenerInvClose(logger), plugin);
+        pluginManager.registerEvents(new ListenerPlayerChat(logger), plugin);
     }
     private void registerCommands() {
         plugin.getCommand("marsregion").setExecutor(new CommandMarsRegion(logger, plugin, messagesConfig, sql, dbHandlerCustomMobs));

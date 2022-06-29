@@ -109,6 +109,12 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         String sqlQuery = "SELECT * FROM SpawnSystemMobController WHERE MobSpawnRegionId=" + mobSpawnRegionId;
         return querySQLRequest(sqlQuery);
     }
+    /*
 
-
+     * Updates
+     * */
+    public boolean updateRegionsName(int regionId, String newName) {
+        String sqlQuery = "UPDATE Regions SET Name='" + newName + "' WHERE ID=" + regionId;
+        return executeSQLRequest(sqlQuery);
+    }
 }

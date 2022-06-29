@@ -1,6 +1,9 @@
 package net.marscraft.skyrpg.module.regions.inventory;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.regions.MessagesRegions;
+import net.marscraft.skyrpg.module.regions.ModuleRegions;
+import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionDisplayMobSpawnRegions;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionDisplayRegions;
@@ -9,6 +12,7 @@ import net.marscraft.skyrpg.module.regions.region.Region;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.inventory.MarsInventory;
+import net.marscraft.skyrpg.shared.inventory.invfunctions.InvFunctionGoBack;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -27,11 +31,15 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
     private DBHandlerRegions dbHandler;
     private InvFunctionRegionFilter invFunctionRegionFilter;
     private Inventory inv;
+    private DBAccessLayerRegions sql;
+    private MessagesRegions messages;
 
-    public InvRegions(ILogManager logger, DBHandlerRegions dbHandler) {
+    public InvRegions(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, MessagesRegions messages) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;
+        this.sql = sql;
+        this.messages = messages;
     }
 
     @Override
@@ -70,11 +78,12 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
         ItemMeta itemMeta = item.getItemMeta();
         NamespacedKey keyFilterName = new NamespacedKey(Main.getPlugin(Main.class), "filterName");
         NamespacedKey keyFilterActive = new NamespacedKey(Main.getPlugin(Main.class), "filterActive");
-        NamespacedKey regionId = new NamespacedKey(Main.getPlugin(Main.class), "regionId");
-        NamespacedKey mobSpawnRegionId = new NamespacedKey(Main.getPlugin(Main.class), "mobSpawnRegionId");
+        NamespacedKey keyRegionId = new NamespacedKey(Main.getPlugin(Main.class), "regionId");
+        NamespacedKey keyMobSpawnRegionId = new NamespacedKey(Main.getPlugin(Main.class), "mobSpawnRegionId");
 
         event.setCancelled(true);
-        
+
+        //Changes RegionDisplay and updates active Filter if Player Clicks on Filter Item
         if(itemMeta.getPersistentDataContainer().has(keyFilterName, PersistentDataType.STRING)
                 && !(itemMeta.getPersistentDataContainer().has(keyFilterActive, PersistentDataType.STRING))) {
             String filterName = itemMeta.getPersistentDataContainer().get(keyFilterName, PersistentDataType.STRING);
@@ -83,13 +92,32 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
             return;
         }
 
+        //Teleports Player to Region if RightClick on RegionItem
         if(event.getClick() == ClickType.RIGHT) {
-            if(itemMeta.getPersistentDataContainer().has(regionId, PersistentDataType.INTEGER)) {
-                int baseRegionId = itemMeta.getPersistentDataContainer().get(regionId, PersistentDataType.INTEGER);
+            if(itemMeta.getPersistentDataContainer().has(keyRegionId, PersistentDataType.INTEGER)) {
+                int baseRegionId = itemMeta.getPersistentDataContainer().get(keyRegionId, PersistentDataType.INTEGER);
                 Region region = dbHandler.getRegion(baseRegionId);
                 Location loc1 = region.getBound().getLoc1();
                 player.teleport(loc1.getWorld().getHighestBlockAt(loc1).getLocation().add(0, 1, 0));
             }
+        }
+
+        if(itemMeta.getPersistentDataContainer().has(keyRegionId, PersistentDataType.INTEGER)) {
+        if(itemMeta.getPersistentDataContainer().has(keyMobSpawnRegionId, PersistentDataType.INTEGER)) {
+            //MobSpawnRegion Edit inv opens
+        } else {
+            InvFunctionGoBack invFunctionGoBack = new InvFunctionGoBack(logger);
+            invFunctionGoBack.addGuiInventory(this);
+            int baseRegionId = itemMeta.getPersistentDataContainer().get(keyRegionId, PersistentDataType.INTEGER);
+            Region region = dbHandler.getRegion(baseRegionId);
+            IGuiInventory invRegionsDetails = new InvRegionsDetails(logger, dbHandler, sql, invFunctionGoBack, region, messages);
+            player.closeInventory();
+            invRegionsDetails.open(player);
+            ModuleRegions.addInv(player.getUniqueId(), invRegionsDetails);
+        }
+
+
+
         }
 
 
@@ -100,7 +128,6 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
         inv = resetInvContents(inv, 2, 6);
         switch (regionName.toLowerCase()) {
             case "regions":
-
                 InvFunctionDisplayRegions invFunctionDisplayRegions = new InvFunctionDisplayRegions(logger, dbHandler, 2, 6);
                 inv = invFunctionDisplayRegions.add(inv);
                 break;

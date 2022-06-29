@@ -47,7 +47,7 @@ public class CommandMarsRegion implements CommandExecutor {
         MessagesRegions messages = new MessagesRegions(logger, configManager, player);
 
         if(args.length == 0) {
-            showRegionOverview(player);
+            showRegionOverview(player, messages);
             return true;
         }
 
@@ -76,8 +76,8 @@ public class CommandMarsRegion implements CommandExecutor {
      * Opens MarsRegions Inventory
      * @param player Player who sees the Inventory
      * */
-    private void showRegionOverview(Player player) {
-        IGuiInventory inv = new InvRegions(logger, dbHandler);
+    private void showRegionOverview(Player player, MessagesRegions messages) {
+        IGuiInventory inv = new InvRegions(logger, dbHandler, sql, messages);
         inv.open(player);
         ModuleRegions.addInv(player.getUniqueId(), inv);
     }
