@@ -99,6 +99,7 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
                 Region region = dbHandler.getRegion(baseRegionId);
                 Location loc1 = region.getBound().getLoc1();
                 player.teleport(loc1.getWorld().getHighestBlockAt(loc1).getLocation().add(0, 1, 0));
+                return;
             }
         }
 

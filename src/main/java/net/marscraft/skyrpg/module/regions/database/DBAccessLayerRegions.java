@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.module.regions.database;
 
+import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.database.DBAccessLayer;
@@ -74,6 +75,18 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         return executeSQLRequest(sqlQuery);
     }
 
+    public boolean insertMobSpawnRegion(MobSpawnRegion mobSpawnRegion) {
+        String sqlQuery = "INSERT INTO MobSpawnRegion " +
+                "(ID, RegionId, MaxMobs, Active)" +
+                "VALUES (" +
+                mobSpawnRegion.getId() + "," +
+                mobSpawnRegion.getRegion().getId() + "," +
+                mobSpawnRegion.getMaxMobs() + "," +
+                mobSpawnRegion.isActive() +
+                ")";
+        return executeSQLRequest(sqlQuery);
+    }
+
 
 
     /*
@@ -82,6 +95,11 @@ public class DBAccessLayerRegions extends DBAccessLayer {
 
     public ResultSet getLastRegionsEntry() {
         String sqlQuery = "SELECT * FROM Regions ORDER BY ID DESC LIMIT 1";
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getLastMobSpawnRegionsEntry() {
+        String sqlQuery = "SELECT * FROM MobSpawnRegion ORDER BY ID DESC LIMIT 1";
         return querySQLRequest(sqlQuery);
     }
 

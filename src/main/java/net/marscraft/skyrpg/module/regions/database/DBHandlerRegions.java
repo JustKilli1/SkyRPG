@@ -44,6 +44,19 @@ public class DBHandlerRegions extends DBHandler {
         }
     }
 
+    public int getLastMobSpawnRegionId() {
+        ResultSet rs = sql.getLastMobSpawnRegionsEntry();
+
+        if(rs == null) return 0;
+        try {
+            if(!rs.next()) return 0;
+            return rs.getInt("ID");
+        } catch (Exception ex) {
+            logger.error(ex);
+            return 0;
+        }
+    }
+
     public Region getRegion(int regionId) {
         ResultSet rs = sql.getRegion(regionId);
 
