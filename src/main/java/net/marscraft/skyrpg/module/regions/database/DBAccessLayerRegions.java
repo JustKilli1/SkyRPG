@@ -40,6 +40,8 @@ public class DBAccessLayerRegions extends DBAccessLayer {
                 "MobSpawnRegionId INT NOT NULL," +
                 "MobId INT NOT NULL," +
                 "SpawnChance DOUBLE DEFAULT 0.0," +
+                "LevelMin INT DEFAULT 0," +
+                "LevelMax INT DEFAULT 0," +
                 "PRIMARY KEY (ID)" +
                 ")";
         return executeSQLRequest(sqlQuery);
@@ -49,7 +51,7 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         String sqlQuery = "CREATE TABLE IF NOT EXISTS MobSpawnRegion (" +
                 "ID INT NOT NULL, " +
                 "RegionId INT NOT NULL," +
-                "MaxMobs INT," +
+                "MaxMobs INT DEFAULT 0," +
                 "Active BOOLEAN DEFAULT false," +
                 "PRIMARY KEY (ID)" +
                 ")";
@@ -133,6 +135,12 @@ public class DBAccessLayerRegions extends DBAccessLayer {
      * */
     public boolean updateRegionsName(int regionId, String newName) {
         String sqlQuery = "UPDATE Regions SET Name='" + newName + "' WHERE ID=" + regionId;
+        return executeSQLRequest(sqlQuery);
+    }
+
+    public boolean updateMobSpawnRegion(MobSpawnRegion mobSpawnRegion) {
+        String sqlQuery = "UPDATE MobSpawnRegion SET MaxMobs=" + mobSpawnRegion.getMaxMobs() + ", Active=" + mobSpawnRegion.isActive() +
+                " WHERE ID=" + mobSpawnRegion.getId();
         return executeSQLRequest(sqlQuery);
     }
 }

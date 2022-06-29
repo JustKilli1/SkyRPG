@@ -5,10 +5,12 @@ import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionDisplayMobSpawnRegions;
+import net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion.InvFunctionDisplayMobSpawnRegions;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionDisplayRegions;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionRegionFilter;
+import net.marscraft.skyrpg.module.regions.inventory.mobspawnregion.InvMobSpawnRegionDetails;
 import net.marscraft.skyrpg.module.regions.region.Region;
+import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.inventory.MarsInventory;
@@ -55,7 +57,8 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
 
     @Override
     public Inventory open(Player player) {
-        Inventory inv = build();
+        inv = build();
+        ModuleRegions.addInv(player.getUniqueId(), this);
         player.openInventory(inv);
         return inv;
     }
@@ -102,13 +105,17 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
                 return;
             }
         }
-
+        InvFunctionGoBack invFunctionGoBack = new InvFunctionGoBack(logger);
+        invFunctionGoBack.addGuiInventory(this);
         if(itemMeta.getPersistentDataContainer().has(keyRegionId, PersistentDataType.INTEGER)) {
         if(itemMeta.getPersistentDataContainer().has(keyMobSpawnRegionId, PersistentDataType.INTEGER)) {
+            int mobSpawnRegionId = itemMeta.getPersistentDataContainer().get(keyMobSpawnRegionId, PersistentDataType.INTEGER);
+            MobSpawnRegion mobSpawnRegion = dbHandler.getMobSpawnRegion(mobSpawnRegionId);
+            InvMobSpawnRegionDetails invMobSpawnRegionDetails = new InvMobSpawnRegionDetails(logger, dbHandler, sql, invFunctionGoBack, mobSpawnRegion, messages);
+            player.closeInventory();
+            invMobSpawnRegionDetails.open(player);
             //MobSpawnRegion Edit inv opens
         } else {
-            InvFunctionGoBack invFunctionGoBack = new InvFunctionGoBack(logger);
-            invFunctionGoBack.addGuiInventory(this);
             int baseRegionId = itemMeta.getPersistentDataContainer().get(keyRegionId, PersistentDataType.INTEGER);
             Region region = dbHandler.getRegion(baseRegionId);
             IGuiInventory invRegionsDetails = new InvRegionsDetails(logger, dbHandler, sql, invFunctionGoBack, region, messages);
@@ -116,13 +123,7 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
             invRegionsDetails.open(player);
             ModuleRegions.addInv(player.getUniqueId(), invRegionsDetails);
         }
-
-
-
         }
-
-
-
     }
 
     private void changeDisplayedRegions(String regionName) {

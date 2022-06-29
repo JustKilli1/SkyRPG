@@ -1,10 +1,9 @@
-package net.marscraft.skyrpg.module.regions.setups;
+package net.marscraft.skyrpg.module.regions.setups.mobspawnregion;
 
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.region.Region;
 import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.events.EventStorage;
@@ -16,15 +15,15 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class SetupChangeMSRMaxMobs implements ISetup {
 
     private final ILogManager logger;
-    private Region region;
+    private MobSpawnRegion mobSpawnRegion;
     private MessagesRegions messages;
     private DBHandlerRegions dbHandler;
     private DBAccessLayerRegions sql;
     private int newMaxMobs;
 
-    public SetupChangeMSRMaxMobs(ILogManager logger, Region region, MessagesRegions messages, DBHandlerRegions dbHandler, DBAccessLayerRegions sql) {
+    public SetupChangeMSRMaxMobs(ILogManager logger, MobSpawnRegion mobSpawnRegion, MessagesRegions messages, DBHandlerRegions dbHandler, DBAccessLayerRegions sql) {
         this.logger = logger;
-        this.region = region;
+        this.mobSpawnRegion = mobSpawnRegion;
         this.messages = messages;
         this.dbHandler = dbHandler;
         this.sql = sql;
@@ -47,9 +46,7 @@ public class SetupChangeMSRMaxMobs implements ISetup {
     @Override
     public boolean finishSetup() {
         if(!setupComplete()) return false;
-        int newId = dbHandler.getLastMobSpawnRegionId() + 1;
-        MobSpawnRegion mobSpawnRegion = new MobSpawnRegion(logger, newId, region, newMaxMobs, null, false);
-        return sql.insertMobSpawnRegion(mobSpawnRegion);
+        return sql.updateMobSpawnRegion(mobSpawnRegion);
     }
 
     @Override
@@ -62,6 +59,7 @@ public class SetupChangeMSRMaxMobs implements ISetup {
         event.setCancelled(true);
         newMaxMobs = Utils.intFromStr(event.getMessage());
         if(newMaxMobs <= 0) messages.sendMaxMobsInvalid(event.getMessage());
+        mobSpawnRegion.setMaxMobs(newMaxMobs);
         if(!finishSetup()) return;
         ModuleRegions.removeSetup(player.getUniqueId());
         messages.sendMSRegionMaxMobsSetMessage(newMaxMobs);

@@ -1,4 +1,4 @@
-package net.marscraft.skyrpg.module.regions.inventory.invfunctions;
+package net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion;
 
 import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;

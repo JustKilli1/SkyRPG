@@ -55,4 +55,7 @@ public class MobSpawnRegion {
     public int getId() {
         return id;
     }
+
+    public void setMaxMobs(int newMaxMobs) { maxMobs = newMaxMobs;
+    }
 }
