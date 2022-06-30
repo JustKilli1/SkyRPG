@@ -1,11 +1,12 @@
 package net.marscraft.skyrpg.module.regions.inventory.mobspawnregion;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion.InvFunctionsMobSpawnRegionDetails;
+import net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion.InvFunctionMSRDetails;
 import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.module.regions.setups.mobspawnregion.SetupChangeMSRMaxMobs;
 import net.marscraft.skyrpg.shared.ItemBuilder;
@@ -24,10 +25,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class InvMobSpawnRegionDetails extends MarsInventory implements IGuiInventory {
+public class InvMSRDetails extends MarsInventory implements IGuiInventory {
 
 
-    public final static String title = "Region Details";
+    public final static String title = "MobSpawnRegion Details";
     private final ILogManager logger;
     private DBHandlerRegions dbHandler;
     private DBAccessLayerRegions sql;
@@ -35,8 +36,9 @@ public class InvMobSpawnRegionDetails extends MarsInventory implements IGuiInven
     private MobSpawnRegion mobSpawnRegion;
     private Inventory inv;
     private MessagesRegions messages;
+    private DBHandlerCustomMobs dbHandlerCustomMobs;
 
-    public InvMobSpawnRegionDetails(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, MobSpawnRegion mobSpawnRegion, MessagesRegions messages) {
+    public InvMSRDetails(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, MobSpawnRegion mobSpawnRegion, MessagesRegions messages, DBHandlerCustomMobs dbHandlerCustomMobs) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;
@@ -44,6 +46,7 @@ public class InvMobSpawnRegionDetails extends MarsInventory implements IGuiInven
         this.invFunctionGoBack = invFunctionGoBack;
         this.mobSpawnRegion = mobSpawnRegion;
         this.messages = messages;
+        this.dbHandlerCustomMobs = dbHandlerCustomMobs;
     }
 
     @Override
@@ -52,8 +55,8 @@ public class InvMobSpawnRegionDetails extends MarsInventory implements IGuiInven
         ItemStack regionDisplay = new ItemBuilder(Material.MAP).setDisplayname(mobSpawnRegion.getRegion().getName()).build();
         inv.setItem(0, regionDisplay);
         inv = invFunctionGoBack.add(inv, 3);
-        InvFunctionsMobSpawnRegionDetails invFunctionsMobSpawnRegionDetails = new InvFunctionsMobSpawnRegionDetails(logger, mobSpawnRegion);
-        inv = invFunctionsMobSpawnRegionDetails.add(inv, 2);
+        InvFunctionMSRDetails invFunctionMSRDetails = new InvFunctionMSRDetails(logger, mobSpawnRegion);
+        inv = invFunctionMSRDetails.add(inv, 2);
 
         return inv;
     }
@@ -98,11 +101,11 @@ public class InvMobSpawnRegionDetails extends MarsInventory implements IGuiInven
                     ModuleRegions.addSetup(player.getUniqueId(), maxMobsSetup);
                     maxMobsSetup.handleCommands(player);
                     break;
-                case "spawningMobs":
-                    /*invFunctionGoBack.addGuiInventory(this);
+                case "spawningmobs":
+                    invFunctionGoBack.addGuiInventory(this);
                     player.closeInventory();
-                    IGuiInventory regionTypeInv = new InvSelectRegionType(logger, dbHandler, sql, invFunctionGoBack, region, messages);
-                    regionTypeInv.open(player);*/
+                    IGuiInventory invSpawningMobs = new InvMSRSpawningMobs(logger, dbHandler, sql, invFunctionGoBack, mobSpawnRegion, messages, dbHandlerCustomMobs);
+                    invSpawningMobs.open(player);
                     break;
                 case "state":
                     mobSpawnRegion.setActive(!mobSpawnRegion.isActive());

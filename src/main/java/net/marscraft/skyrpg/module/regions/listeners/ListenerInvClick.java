@@ -4,6 +4,7 @@ import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
+import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,11 @@ public class ListenerInvClick implements Listener {
         if(ModuleRegions.getInvs().containsKey(player.getUniqueId())) {
             IGuiInventory inv = ModuleRegions.getInvs().get(player.getUniqueId());
             inv.handleEvents(eventStorage);
+        }
+
+        if(ModuleRegions.getSetups().containsKey(player.getUniqueId())) {
+            ISetup setup = ModuleRegions.getSetups().get(player.getUniqueId());
+            setup.handleEvents(eventStorage);
         }
 
     }

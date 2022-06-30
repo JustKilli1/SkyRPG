@@ -34,8 +34,9 @@ public class InvRegionsDetails extends MarsInventory implements IGuiInventory {
     private Region region;
     private Inventory inv;
     private MessagesRegions messages;
+    private Main plugin;
 
-    public InvRegionsDetails(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, Region region, MessagesRegions messages) {
+    public InvRegionsDetails(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, Region region, MessagesRegions messages, Main plugin) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;
@@ -43,6 +44,7 @@ public class InvRegionsDetails extends MarsInventory implements IGuiInventory {
         this.invFunctionGoBack = invFunctionGoBack;
         this.region = region;
         this.messages = messages;
+        this.plugin = plugin;
     }
 
     @Override
@@ -100,7 +102,7 @@ public class InvRegionsDetails extends MarsInventory implements IGuiInventory {
                 case "regiontype":
                     invFunctionGoBack.addGuiInventory(this);
                     player.closeInventory();
-                    IGuiInventory regionTypeInv = new InvSelectRegionType(logger, dbHandler, sql, invFunctionGoBack, region, messages);
+                    IGuiInventory regionTypeInv = new InvSelectRegionType(logger, dbHandler, sql, invFunctionGoBack, region, messages, plugin);
                     regionTypeInv.open(player);
                     break;
             }

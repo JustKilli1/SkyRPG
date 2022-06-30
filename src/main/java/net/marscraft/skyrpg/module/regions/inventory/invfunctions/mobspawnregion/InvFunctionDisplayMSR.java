@@ -2,7 +2,6 @@ package net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregio
 
 import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.region.Region;
 import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.ItemBuilder;
 import net.marscraft.skyrpg.shared.inventory.invfunctions.InvFunction;
@@ -14,13 +13,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class InvFunctionDisplayMobSpawnRegions extends InvFunction {
+public class InvFunctionDisplayMSR extends InvFunction {
 
     private final ILogManager logger;
     private DBHandlerRegions dbHandler;
     private int startRow, endRow;
 
-    public InvFunctionDisplayMobSpawnRegions(ILogManager logger, DBHandlerRegions dbHandler, int startRow, int endRow) {
+    public InvFunctionDisplayMSR(ILogManager logger, DBHandlerRegions dbHandler, int startRow, int endRow) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;

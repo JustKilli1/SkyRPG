@@ -13,11 +13,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvFunctionsMobSpawnRegionDetails extends InvFunction {
+public class InvFunctionMSRDetails extends InvFunction {
     private ILogManager logger;
     private MobSpawnRegion mobSpawnRegion;
 
-    public InvFunctionsMobSpawnRegionDetails(ILogManager logger, MobSpawnRegion mobSpawnRegion) {
+    public InvFunctionMSRDetails(ILogManager logger, MobSpawnRegion mobSpawnRegion) {
         super(logger);
         this.logger = logger;
         this.mobSpawnRegion = mobSpawnRegion;

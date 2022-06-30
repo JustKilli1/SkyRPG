@@ -1,14 +1,15 @@
 package net.marscraft.skyrpg.module.regions.inventory;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion.InvFunctionDisplayMobSpawnRegions;
+import net.marscraft.skyrpg.module.regions.inventory.invfunctions.mobspawnregion.InvFunctionDisplayMSR;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionDisplayRegions;
 import net.marscraft.skyrpg.module.regions.inventory.invfunctions.InvFunctionRegionFilter;
-import net.marscraft.skyrpg.module.regions.inventory.mobspawnregion.InvMobSpawnRegionDetails;
+import net.marscraft.skyrpg.module.regions.inventory.mobspawnregion.InvMSRDetails;
 import net.marscraft.skyrpg.module.regions.region.Region;
 import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.events.EventStorage;
@@ -35,13 +36,17 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
     private Inventory inv;
     private DBAccessLayerRegions sql;
     private MessagesRegions messages;
+    private DBHandlerCustomMobs dbHandlerCustomMobs;
+    private Main plugin;
 
-    public InvRegions(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, MessagesRegions messages) {
+    public InvRegions(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, MessagesRegions messages, DBHandlerCustomMobs dbHandlerCustomMobs, Main plugin) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;
         this.sql = sql;
         this.messages = messages;
+        this.dbHandlerCustomMobs = dbHandlerCustomMobs;
+        this.plugin = plugin;
     }
 
     @Override
@@ -111,14 +116,14 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
         if(itemMeta.getPersistentDataContainer().has(keyMobSpawnRegionId, PersistentDataType.INTEGER)) {
             int mobSpawnRegionId = itemMeta.getPersistentDataContainer().get(keyMobSpawnRegionId, PersistentDataType.INTEGER);
             MobSpawnRegion mobSpawnRegion = dbHandler.getMobSpawnRegion(mobSpawnRegionId);
-            InvMobSpawnRegionDetails invMobSpawnRegionDetails = new InvMobSpawnRegionDetails(logger, dbHandler, sql, invFunctionGoBack, mobSpawnRegion, messages);
+            InvMSRDetails invMSRDetails = new InvMSRDetails(logger, dbHandler, sql, invFunctionGoBack, mobSpawnRegion, messages, dbHandlerCustomMobs);
             player.closeInventory();
-            invMobSpawnRegionDetails.open(player);
+            invMSRDetails.open(player);
             //MobSpawnRegion Edit inv opens
         } else {
             int baseRegionId = itemMeta.getPersistentDataContainer().get(keyRegionId, PersistentDataType.INTEGER);
             Region region = dbHandler.getRegion(baseRegionId);
-            IGuiInventory invRegionsDetails = new InvRegionsDetails(logger, dbHandler, sql, invFunctionGoBack, region, messages);
+            IGuiInventory invRegionsDetails = new InvRegionsDetails(logger, dbHandler, sql, invFunctionGoBack, region, messages, plugin);
             player.closeInventory();
             invRegionsDetails.open(player);
             ModuleRegions.addInv(player.getUniqueId(), invRegionsDetails);
@@ -134,8 +139,8 @@ public class InvRegions extends MarsInventory implements IGuiInventory {
                 inv = invFunctionDisplayRegions.add(inv);
                 break;
             case "mobspawnregions":
-                InvFunctionDisplayMobSpawnRegions invFunctionDisplayMobSpawnRegions = new InvFunctionDisplayMobSpawnRegions(logger, dbHandler, 2, 6);
-                inv = invFunctionDisplayMobSpawnRegions.add(inv);
+                InvFunctionDisplayMSR invFunctionDisplayMSR = new InvFunctionDisplayMSR(logger, dbHandler, 2, 6);
+                inv = invFunctionDisplayMSR.add(inv);
                 break;
         }
 

@@ -34,4 +34,31 @@ public class MessagesRegions extends MessageManager {
 
     public void sendMSRegionMaxMobsSetMessage(int newMaxMobs) { sendPlayerMessage("Die Maximale Mob Anzahl der Region wurde auf §c" + newMaxMobs + " §agesetzt.");
     }
+
+    public void sendChangeSpawnChance() { sendPlayerMessage("Bitte gebe die neue SpawnChance ein");
+    }
+
+    public void sendSpawnChanceInvalid(String message) { sendPlayerMessage("§c" + message + " §aist keine gültige SpawnChance.");
+    }
+
+    public void sendMSRSpawnChanceSetMessage(double newSpawnChance) { sendPlayerMessage("SpawnChance wurde auf §c" + newSpawnChance + " §ageändert.");
+    }
+
+    public void sendInvalidLevel(String message) { sendPlayerMessage("§c" + message + " §aist kein gültiges Level. Bitte gebe eine positive Ganzzahl an.");
+    }
+
+    public void sendChangeMobMinLevel() { sendPlayerMessage("Bitte geben Sie das §cMinimal Level §aan");
+    }
+
+    public void sendChangeMobMaxLevel() { sendPlayerMessage("Bitte geben Sie das §cMaximal Level §aan");
+    }
+
+    public void sendMobLevelChanged() { sendPlayerMessage("Mob Level erfolgreich geändert");
+    }
+
+    public void sendMaxLevelInvalid() { sendPlayerMessage("Das Maximal Level muss höher sein als das minimal Level");
+    }
+
+    public void sendNewMobAdded() { sendPlayerMessage("Neuer Mob erfolgreich hinzugefügt");
+    }
 }

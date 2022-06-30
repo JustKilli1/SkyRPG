@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.module.regions.setups;
 
+import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.MessagesRegions;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
@@ -31,12 +32,12 @@ public class SetupMarsRegion implements ISetup {
     private Bound bound;
     private Player player;
 
-    public SetupMarsRegion(ILogManager logger, String regionName, DBAccessLayerRegions sql, MessagesRegions messages, DBHandlerCustomMobs dbHandlerCustomMobs) {
+    public SetupMarsRegion(ILogManager logger, String regionName, DBAccessLayerRegions sql, MessagesRegions messages, DBHandlerCustomMobs dbHandlerCustomMobs, Main plugin) {
         this.logger = logger;
         this.regionName = regionName;
         this.sql = sql;
         this.messages = messages;
-        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs);
+        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs, plugin);
         bound = new Bound();
         region = new Region(logger, this.regionName, bound);
     }

@@ -35,8 +35,9 @@ public class InvSelectRegionType extends MarsInventory implements IGuiInventory 
     private Region region;
     private Inventory inv;
     private MessagesRegions messages;
+    private Main plugin;
 
-    public InvSelectRegionType(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, Region region, MessagesRegions messages) {
+    public InvSelectRegionType(ILogManager logger, DBHandlerRegions dbHandler, DBAccessLayerRegions sql, InvFunctionGoBack invFunctionGoBack, Region region, MessagesRegions messages, Main plugin) {
         super(logger);
         this.logger = logger;
         this.dbHandler = dbHandler;
@@ -44,6 +45,7 @@ public class InvSelectRegionType extends MarsInventory implements IGuiInventory 
         this.invFunctionGoBack = invFunctionGoBack;
         this.region = region;
         this.messages = messages;
+        this.plugin = plugin;
     }
 
     @Override
@@ -94,7 +96,7 @@ public class InvSelectRegionType extends MarsInventory implements IGuiInventory 
             switch (regionTypeName.toLowerCase()) {
                 case "mobspawnregion":
                     int newId = dbHandler.getLastMobSpawnRegionId() + 1;
-                    MobSpawnRegion mobSpawnRegion = new MobSpawnRegion(logger, newId, region, 0, null, false);
+                    MobSpawnRegion mobSpawnRegion = new MobSpawnRegion(logger, newId, region, 0, null, false, plugin);
                     sql.insertMobSpawnRegion(mobSpawnRegion);
                     ISetup typeSetup = new SetupChangeMSRMaxMobs(logger, mobSpawnRegion, messages, dbHandler, sql);
                     ModuleRegions.addSetup(player.getUniqueId(), typeSetup);

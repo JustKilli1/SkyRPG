@@ -1,5 +1,6 @@
 package net.marscraft.skyrpg.module.regions.database;
 
+import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobCharacteristics;
 import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
@@ -89,6 +90,18 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         return executeSQLRequest(sqlQuery);
     }
 
+    public boolean insertMob(int mobSpawnRegionId, int mobId, MobCharacteristics mobCharacteristics) {
+        String sqlQuery = "INSERT INTO SpawnSystemMobController " +
+                "(ID, MobSpawnRegionId, MobId, SpawnChance, LevelMin, LevelMax) " +
+                "VALUES (" +
+                mobCharacteristics.getControllerId() + ", " +
+                mobSpawnRegionId + ", " +
+                mobId + ", " +
+                mobCharacteristics.getSpawnChance() + ", " +
+                mobCharacteristics.getLevelMin() + ", " +
+                mobCharacteristics.getLevelMax() + ")";
+        return executeSQLRequest(sqlQuery);
+    }
 
 
     /*
@@ -102,6 +115,11 @@ public class DBAccessLayerRegions extends DBAccessLayer {
 
     public ResultSet getLastMobSpawnRegionsEntry() {
         String sqlQuery = "SELECT * FROM MobSpawnRegion ORDER BY ID DESC LIMIT 1";
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getLastMobControllerId() {
+        String sqlQuery = "SELECT * FROM SpawnSystemMobController ORDER BY ID DESC LIMIT 1";
         return querySQLRequest(sqlQuery);
     }
 
@@ -119,9 +137,18 @@ public class DBAccessLayerRegions extends DBAccessLayer {
         String sqlQuery = "SELECT * FROM MobSpawnRegion";
         return querySQLRequest(sqlQuery);
     }
+    public ResultSet getAllMobSpawnRegions(boolean active) {
+        String sqlQuery = "SELECT * FROM MobSpawnRegion WHERE Active=" + active;
+        return querySQLRequest(sqlQuery);
+    }
 
     public ResultSet getMobSpawnRegion(int id) {
         String sqlQuery = "SELECT * FROM MobSpawnRegion WHERE ID=" + id;
+        return querySQLRequest(sqlQuery);
+    }
+
+    public ResultSet getMobSpawnRegion(int id, boolean active) {
+        String sqlQuery = "SELECT * FROM MobSpawnRegion WHERE ID=" + id + " AND Active=" + active;
         return querySQLRequest(sqlQuery);
     }
 
@@ -143,4 +170,25 @@ public class DBAccessLayerRegions extends DBAccessLayer {
                 " WHERE ID=" + mobSpawnRegion.getId();
         return executeSQLRequest(sqlQuery);
     }
+
+    public boolean updateMobSpawnRegionMob(MobCharacteristics mobCharacteristics) {
+        String sqlQuery = "UPDATE SpawnSystemMobController SET " +
+                "SpawnChance=" + mobCharacteristics.getSpawnChance() + ", " +
+                "LevelMin=" + mobCharacteristics.getLevelMin() + ", " +
+                "LevelMax=" + mobCharacteristics.getLevelMax() +
+                " WHERE ID=" + mobCharacteristics.getControllerId();
+
+        return executeSQLRequest(sqlQuery);
+
+    }
+
+    /*
+    * Deletes
+    * */
+
+    public boolean deleteMob(int controllerId) {
+        String sqlQuery = "DELETE FROM SpawnSystemMobController WHERE ID=" + controllerId;
+        return executeSQLRequest(sqlQuery);
+    }
+
 }

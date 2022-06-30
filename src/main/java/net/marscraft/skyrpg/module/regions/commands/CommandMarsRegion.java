@@ -35,7 +35,7 @@ public class CommandMarsRegion implements CommandExecutor {
         this.configManager = configManager;
         this.sql = sql;
         this.dbHandlerCustomMobs = dbHandlerCustomMobs;
-        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs);
+        dbHandler = new DBHandlerRegions(this.logger, this.sql, dbHandlerCustomMobs, plugin);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CommandMarsRegion implements CommandExecutor {
                     return true;
                 }
                 String regionName = Utils.getStrFromArray(args, 1);
-                ISetup setup = new SetupMarsRegion(logger, regionName, sql, messages, dbHandlerCustomMobs);
+                ISetup setup = new SetupMarsRegion(logger, regionName, sql, messages, dbHandlerCustomMobs, plugin);
                 ModuleRegions.addSetup(player.getUniqueId(), setup);
                 setup.handleCommands(player, args);
                 break;
@@ -77,7 +77,7 @@ public class CommandMarsRegion implements CommandExecutor {
      * @param player Player who sees the Inventory
      * */
     private void showRegionOverview(Player player, MessagesRegions messages) {
-        IGuiInventory inv = new InvRegions(logger, dbHandler, sql, messages);
+        IGuiInventory inv = new InvRegions(logger, dbHandler, sql, messages, dbHandlerCustomMobs, plugin);
         inv.open(player);
         ModuleRegions.addInv(player.getUniqueId(), inv);
     }
