@@ -21,7 +21,7 @@ public class InvFunction {
         Material mobTypeMat = Material.valueOf(mobMatName.toUpperCase());
         return new ItemBuilder(mobTypeMat)
                     .setDisplayname("§c" + mobId + ". " + mobName)
-                    .setLore("§aBaseHealth: " + maxHealth, "§aSpawnChance: " + spawnChance)
+                    .setLore("§aBaseHealth: " + maxHealth)
                     .addPersistantDataToItemStack(keyMobId, mobId)
                     .build()
                     ;

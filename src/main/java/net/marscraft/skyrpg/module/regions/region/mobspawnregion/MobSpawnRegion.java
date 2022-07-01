@@ -1,6 +1,7 @@
 package net.marscraft.skyrpg.module.regions.region.mobspawnregion;
 
 import net.marscraft.skyrpg.base.Main;
+import net.marscraft.skyrpg.module.custommobs.mobs.MobHandler;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.region.Region;
@@ -49,14 +50,19 @@ public class MobSpawnRegion {
         int mobsInRegion = spawnedMobs.size();
         if(mobsInRegion >= maxMobs) return;
         int maxSpawnableAmount = maxMobs - mobsInRegion;
-        MobHostile spawningMob = getSpawningMob();
-        if(spawningMob == null) return;
+
         int amount = ThreadLocalRandom.current().nextInt(0, maxSpawnableAmount);
 
         for(int i = 0; i <= amount; i++) {
             Location spawnLoc = getRandomSpawnLocation();
             if(!isSpawnable(spawnLoc))continue;
-            Entity spawnedMob = spawningMob.spawn(spawnLoc);
+            MobHostile spawningMob = getSpawningMob();
+            if(spawningMob == null) continue;
+            MobCharacteristics mobCharacteristics = mobs.get(spawningMob);
+            int randomLevel = ThreadLocalRandom.current().nextInt(mobCharacteristics.getLevelMin(), mobCharacteristics.getLevelMax());
+            MobHostile scaledMob = spawningMob.scaleMobByLevel(spawningMob, randomLevel);
+            scaledMob.setMobLevel(randomLevel);
+            Entity spawnedMob = scaledMob.spawn(spawnLoc);
             spawnedMobs.add(spawnedMob);
         }
     }
@@ -96,7 +102,7 @@ public class MobSpawnRegion {
         for(MobHostile mob : mobs.keySet()) {
             MobCharacteristics mobCharacteristics = mobs.get(mob);
             double spawnChance = mobCharacteristics.getSpawnChance();
-            int randomNum = ThreadLocalRandom.current().nextInt(0, 101);
+            int randomNum = ThreadLocalRandom.current().nextInt(0, 100);
             if(randomNum <= spawnChance) return mob;
         }
         return null;

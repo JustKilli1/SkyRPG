@@ -46,6 +46,7 @@ public class SetupChangeMSRMaxMobs implements ISetup {
     @Override
     public boolean finishSetup() {
         if(!setupComplete()) return false;
+        ModuleRegions.addActiveMobSpawnRegion(mobSpawnRegion);
         return sql.updateMobSpawnRegion(mobSpawnRegion);
     }
 

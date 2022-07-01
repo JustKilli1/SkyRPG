@@ -11,11 +11,11 @@ public class MobHandler {
         this.logger = logger;
     }
 
-    protected MobHostile scaleMobByLevel(MobHostile mob, int level) {
+    public MobHostile scaleMobByLevel(MobHostile mob, int level) {
         double multi = mob.getLevelMultiplier() <= 0 ? standardLevelMulti : mob.getLevelMultiplier();
         double statMultiplier = (level * multi);
         double newMobHealth = Math.ceil((mob.getBaseHealth() * statMultiplier) + mob.getBaseHealth());
-        mob.setBaseHealth(newMobHealth);
+        mob.setScaledHealth(newMobHealth);
 
         return mob;
     }

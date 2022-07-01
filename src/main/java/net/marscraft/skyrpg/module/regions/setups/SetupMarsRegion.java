@@ -46,6 +46,8 @@ public class SetupMarsRegion implements ISetup {
     @Override
     public <T> T handleEvents(EventStorage eventStorage) {
 
+        PlayerInteractEvent playerInteractEvent = eventStorage.getPlayerInteractEvent();
+        if(playerInteractEvent == null) return null;
         return handlePlayerInteractEvent(eventStorage);
 
     }
@@ -56,6 +58,7 @@ public class SetupMarsRegion implements ISetup {
         Block block = event.getClickedBlock();
         if (block == null)  return null;
         if (!boundarySetup.containsKey(player.getUniqueId())) return null;
+        event.setCancelled(true);
         bound = boundarySetup.get(player.getUniqueId());
 
         if(event.getAction() != Action.LEFT_CLICK_BLOCK) return null;

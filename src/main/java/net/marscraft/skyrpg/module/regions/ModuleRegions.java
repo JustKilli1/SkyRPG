@@ -88,7 +88,7 @@ public class ModuleRegions implements IModule {
         registerListener();
         registerCommands();
         logger.info("§aModule Regions loaded Successfully");
-        //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
+        //TODO Module CustomMobs muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
         updateModuleMode(LIVE);
         initializeMobSpawnRegions();
@@ -114,30 +114,6 @@ public class ModuleRegions implements IModule {
 
             }
         }.runTaskTimer(plugin, 0, 10 * 20);
-    }
-
-    private Location getRandomSpawnLocation(MobSpawnRegion mobSpawnRegion) {
-        Location loc1 = mobSpawnRegion.getRegion().getBound().getLoc1();
-        Location loc2 = mobSpawnRegion.getRegion().getBound().getLoc2();
-        int loc1X = loc1.getBlockX();
-        int loc2X = loc2.getBlockX();
-        int loc1Z = loc1.getBlockZ();
-        int loc2Z = loc2.getBlockZ();
-
-        //loc1x 10 loc2x -10
-        //x1: loc1x = 10
-        //x2: -10
-
-        int x1 = loc1X > loc2X ? loc1X : loc2X;
-        int x2 = loc1X > loc2X ? loc2X : loc1X;
-        int randomX = ThreadLocalRandom.current().nextInt(x2, x1 + 1);
-
-        int z1 = loc1Z > loc2Z ? loc1Z : loc2Z;
-        int z2 = loc1Z > loc2Z ? loc2Z : loc1Z;
-        int randomZ = ThreadLocalRandom.current().nextInt(z2, z1 + 1);
-        Block block = loc1.getWorld().getHighestBlockAt(randomX, randomZ);
-        Location randomLoc = block.getLocation().clone().add(0, 1, 0);
-        return randomLoc;
     }
 
     private boolean createDatabaseTables() {

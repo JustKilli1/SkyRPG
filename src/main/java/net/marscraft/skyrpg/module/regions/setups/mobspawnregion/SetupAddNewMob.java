@@ -120,6 +120,7 @@ public class SetupAddNewMob implements ISetup {
     @Override
     public boolean finishSetup() {
         if(!setupComplete()) return false;
+        if(mobSpawnRegion.isActive())ModuleRegions.addActiveMobSpawnRegion(mobSpawnRegion);
         return sql.insertMob(mobSpawnRegion.getId(), mobHostile.getId(), mobCharacteristics);
     }
 
