@@ -23,7 +23,6 @@ public class SetupCreateCustomItem implements ISetup {
     public SetupCreateCustomItem(ILogManager logger, MessagesCustomItems messages, DBHandlerCustomItems dbHandler) {
         this.logger = logger;
         this.dbHandler = dbHandler;
-        this.customItem = customItem;
         this.messages = messages;
     }
 

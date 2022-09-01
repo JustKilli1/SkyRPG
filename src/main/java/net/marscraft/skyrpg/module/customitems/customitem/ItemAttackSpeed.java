@@ -10,8 +10,8 @@ public enum ItemAttackSpeed {
     ;
 
     //AttackCooldown between 2 Attacks in seconds
-    private int id;
-    private double attackCooldown;
+    private final int id;
+    private final double attackCooldown;
 
     ItemAttackSpeed(int id, double attackCooldown) {
         this.id = id;

@@ -15,21 +15,21 @@ public class InvFunction {
         this.logger = logger;
     }
 
-    protected ItemStack getCustomMobDisplayItem(String mobType, String mobName, int mobId, double maxHealth, double spawnChance) {
+    public ItemStack getCustomMobDisplayItem(String mobType, String mobName, int mobId, double maxHealth, double spawnChance) {
         NamespacedKey keyMobId = new NamespacedKey(Main.getPlugin(Main.class), "mobId");
         String mobMatName = mobType + "_spawn_egg";
         Material mobTypeMat = Material.valueOf(mobMatName.toUpperCase());
         return new ItemBuilder(mobTypeMat)
                     .setDisplayname("§c" + mobId + ". " + mobName)
-                    .setLore("§aBaseHealth: " + maxHealth, "§aSpawnChance: " + spawnChance)
+                    .setLore("§aBaseHealth: " + maxHealth)
                     .addPersistantDataToItemStack(keyMobId, mobId)
                     .build()
                     ;
     }
 
-    protected int getStartIndex(int row) { return (row * 9) - 9; }
+    public int getStartIndex(int row) { return (row * 9) - 9; }
 
-    protected int getEndIndex(int row) { return (row * 9) - 1; }
+    public int getEndIndex(int row) { return (row * 9) - 1; }
 
     public ItemStack buildFilterItem(String displayName, String filterName, boolean filterActive, String... lore) {
         NamespacedKey keyFilterName = new NamespacedKey(Main.getPlugin(Main.class), "filterName");

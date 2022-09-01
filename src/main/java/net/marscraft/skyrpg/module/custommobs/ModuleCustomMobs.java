@@ -8,10 +8,7 @@ import net.marscraft.skyrpg.module.custommobs.commands.CommandMarsMob;
 import net.marscraft.skyrpg.module.custommobs.commands.CommandSpawnCustomMob;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.listeners.ListenerEntityDamage;
-import net.marscraft.skyrpg.module.custommobs.listeners.ListenerInvClick;
-import net.marscraft.skyrpg.module.custommobs.listeners.ListenerInvClose;
-import net.marscraft.skyrpg.module.custommobs.listeners.ListenerPlayerChat;
+import net.marscraft.skyrpg.module.custommobs.listeners.*;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
@@ -24,8 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 import static net.marscraft.skyrpg.module.ModuleMode.*;
-import static net.marscraft.skyrpg.module.ModuleMode.DEBUG;
-import static net.marscraft.skyrpg.module.ModuleMode.MAINTENANCE;
 import static net.marscraft.skyrpg.module.ModuleState.*;
 
 public class ModuleCustomMobs implements IModule {
@@ -120,6 +115,7 @@ public class ModuleCustomMobs implements IModule {
         pluginManager.registerEvents(new ListenerInvClick(logger, messagesConfig, dbHandler, sql), plugin);
         pluginManager.registerEvents(new ListenerPlayerChat(logger, messagesConfig), plugin);
         pluginManager.registerEvents(new ListenerInvClose(logger, messagesConfig, dbHandler, sql), plugin);
+        pluginManager.registerEvents(new ListenerEntityCombust(logger), plugin);
     }
     private void registerCommands() {
         plugin.getCommand("spawnCustomMob").setExecutor(new CommandSpawnCustomMob(logger, messagesConfig, dbHandler));
@@ -142,7 +138,7 @@ public class ModuleCustomMobs implements IModule {
                     ticksLeft--;
                     ListenerEntityDamage.indicators.put(stand, ticksLeft);
                 }
-                stands.removeAll(removal);
+                removal.forEach(stands::remove);
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }

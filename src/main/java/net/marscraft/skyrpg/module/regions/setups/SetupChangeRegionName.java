@@ -1,30 +1,27 @@
-package net.marscraft.skyrpg.module.custommobs.setups;
+package net.marscraft.skyrpg.module.regions.setups;
 
-import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
+import net.marscraft.skyrpg.module.regions.MessagesRegions;
+import net.marscraft.skyrpg.module.regions.ModuleRegions;
+import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class SetupCustomMobName implements ISetup {
+public class SetupChangeRegionName implements ISetup {
 
     private final ILogManager logger;
-    private final DBHandlerCustomMobs dbHandler;
-    private final DBAccessLayerCustomMobs sql;
-    private MessagesCustomMobs messages;
-    private int mobId;
+    private final DBAccessLayerRegions sql;
+    private MessagesRegions messages;
+    private int regionId;
     private String newName;
 
-    public SetupCustomMobName(ILogManager logger, DBHandlerCustomMobs dbHandler, DBAccessLayerCustomMobs sql, MessagesCustomMobs messages, int mobId) {
+    public SetupChangeRegionName(ILogManager logger, DBAccessLayerRegions sql, MessagesRegions messages, int regionId) {
         this.logger = logger;
-        this.dbHandler = dbHandler;
         this.sql = sql;
         this.messages = messages;
-        this.mobId = mobId;
+        this.regionId = regionId;
     }
 
 
@@ -46,7 +43,7 @@ public class SetupCustomMobName implements ISetup {
     @Override
     public boolean finishSetup() {
         if(!setupComplete()) return false;
-        return sql.updateCustomMobName(mobId, newName);
+        return sql.updateRegionsName(regionId, newName);
     }
 
     @Override
@@ -59,8 +56,8 @@ public class SetupCustomMobName implements ISetup {
         newName = event.getMessage();
         event.setCancelled(true);
         if(!finishSetup()) return;
-        ModuleCustomMobs.removeSetup(player.getUniqueId());
-        messages.sendNameSetMessage(newName);
+        ModuleRegions.removeSetup(player.getUniqueId());
+        messages.sendRegionNameSetMessage(newName);
     }
 
 }

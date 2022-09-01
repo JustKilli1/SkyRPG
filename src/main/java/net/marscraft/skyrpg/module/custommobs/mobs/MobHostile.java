@@ -20,13 +20,14 @@ public class MobHostile extends MobHandler {
     private ILogManager logger;
     private String name;
     private int id;
-    private double currentHealth, baseHealth, spawnChance;
+    private double currentHealth, baseHealth, scaledHealth, spawnChance;
     private EntityType type;
     private ItemStack mainItem;
     private ItemStack[] armor;
     private List<LootItem> loot;
     private double levelMultiplier;
     private boolean active;
+    private int mobLevel;
 
     public MobHostile(ILogManager logger, int id, String name) {
         super(logger);
@@ -66,16 +67,20 @@ public class MobHostile extends MobHandler {
      * */
     public LivingEntity spawn(Location loc) {
         NamespacedKey keyCustomMob = new NamespacedKey(Main.getPlugin(Main.class), "customMob");
+        NamespacedKey keyCustomMobScaledHealth = new NamespacedKey(Main.getPlugin(Main.class), "scaledHealth");
+        NamespacedKey keyCustomMobLevel = new NamespacedKey(Main.getPlugin(Main.class), "Level");
         LivingEntity entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
         entity.getPersistentDataContainer().set(keyCustomMob, PersistentDataType.INTEGER, id);
+        entity.getPersistentDataContainer().set(keyCustomMobScaledHealth, PersistentDataType.DOUBLE, scaledHealth);
+        entity.getPersistentDataContainer().set(keyCustomMobLevel, PersistentDataType.INTEGER, mobLevel);
         //entity.setVisualFire(true);
         entity.setCustomNameVisible(true);
-        entity.setCustomName(buildCustomName(baseHealth));
+        entity.setCustomName(buildCustomName(scaledHealth));
         //entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.5);
-        entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(baseHealth);
-        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(100);
+        entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(scaledHealth);
+        //entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(100);
         //entity.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(5.0);
-        entity.setHealth(baseHealth);
+        entity.setHealth(scaledHealth);
         EntityEquipment inv = entity.getEquipment();
         if (armor != null) {
             inv.setHelmet(armor[0]);
@@ -121,7 +126,7 @@ public class MobHostile extends MobHandler {
      * @param health Current Health from Mob
      * @return Formatted CustomName
      */
-    private String buildCustomName(double health) { return "§c" + name + " §a" + (int) health + "/" + (int) baseHealth + "§c❤"; }
+    private String buildCustomName(double health) { return "§a[Lv. " + mobLevel + "] " + "§c" + name + " §a" + (int) health + "/" + (int) scaledHealth + "§c❤"; }
 
     public int getId() { return id; }
 
@@ -169,5 +174,21 @@ public class MobHostile extends MobHandler {
 
     public void setLevelMultiplier(double levelMultiplier) {
         this.levelMultiplier = levelMultiplier;
+    }
+
+    public int getMobLevel() {
+        return mobLevel;
+    }
+
+    public void setMobLevel(int mobLevel) {
+        this.mobLevel = mobLevel;
+    }
+
+    public double getScaledHealth() {
+        return scaledHealth;
+    }
+
+    public void setScaledHealth(double scaledHealth) {
+        this.scaledHealth = scaledHealth;
     }
 }

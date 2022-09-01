@@ -2,8 +2,6 @@ package net.marscraft.skyrpg.module;
 
 import net.marscraft.skyrpg.shared.events.EventStorage;
 
-import java.util.List;
-
 public interface IModule {
 
     void onModuleEnable();

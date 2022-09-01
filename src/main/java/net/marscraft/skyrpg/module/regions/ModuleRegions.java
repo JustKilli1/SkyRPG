@@ -4,43 +4,51 @@ import net.marscraft.skyrpg.base.Main;
 import net.marscraft.skyrpg.module.IModule;
 import net.marscraft.skyrpg.module.ModuleMode;
 import net.marscraft.skyrpg.module.ModuleState;
+import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
+import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.regions.commands.CommandMarsRegion;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerInteract;
-import net.marscraft.skyrpg.module.regions.listeners.ListenerPlayerMove;
+import net.marscraft.skyrpg.module.regions.listeners.*;
+import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
+import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.logmanager.LogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static net.marscraft.skyrpg.module.ModuleMode.*;
 import static net.marscraft.skyrpg.module.ModuleState.*;
-import static net.marscraft.skyrpg.module.ModuleState.ACTIVE;
 
 public class ModuleRegions implements IModule {
     private static final String moduleName = "Regions";
     private static final String moduleDescription = "Creates Region between two locations";
     private static Map<UUID, ISetup> setups = new HashMap<>();
+    private static Map<UUID, IGuiInventory> invs = new HashMap<>();
+    private static List<MobSpawnRegion> activeSpawnRegions = new ArrayList<>();
     private final ILogManager logger;
     private ModuleState moduleState;
     private ModuleMode moduleMode;
     private Main plugin;
     private DBAccessLayerRegions sql;
     private DBHandlerRegions dbHandler;
+    private DBHandlerCustomMobs dbHandlerCustomMobs;
     private IConfigManager messagesConfig;
+    private BukkitTask task;
 
     public ModuleRegions(Main plugin, IConfigManager mysqlConfig, IConfigManager messagesConfig) {
         this.plugin = plugin;
         logger = new LogManager(this.plugin, moduleName);
         this.sql = new DBAccessLayerRegions(logger, mysqlConfig);
-        dbHandler = new DBHandlerRegions(logger, this.sql);
+        DBAccessLayerCustomMobs sqlCustomMobs = new DBAccessLayerCustomMobs(logger, mysqlConfig);
+        dbHandlerCustomMobs = new DBHandlerCustomMobs(logger, sqlCustomMobs);
+        dbHandler = new DBHandlerRegions(logger, this.sql, dbHandlerCustomMobs, plugin);
         this.messagesConfig = messagesConfig;
 
     }
@@ -53,7 +61,6 @@ public class ModuleRegions implements IModule {
 
         updateModuleMode(moduleMode);
     }
-
 
 
     @Override
@@ -75,22 +82,48 @@ public class ModuleRegions implements IModule {
         registerListener();
         registerCommands();
         logger.info("§aModule Regions loaded Successfully");
-        //TODO Module CustomItems muss aktiviert sein damit dieses Module geladen werden kann
+        //TODO Module CustomMobs muss aktiviert sein damit dieses Module geladen werden kann
         updateModuleState(ACTIVE);
         updateModuleMode(LIVE);
+        initializeMobSpawnRegions();
+        startMobSpawning();
+    }
+
+    private boolean initializeMobSpawnRegions() {
+        List<MobSpawnRegion> mobSpawnRegions = dbHandler.getAllMobSpawnRegions(true);
+        activeSpawnRegions.addAll(mobSpawnRegions);
+        return true;
+    }
+
+    private void startMobSpawning() {
+        task = new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                for(MobSpawnRegion mobSpawnRegion : activeSpawnRegions) {
+                    mobSpawnRegion.spawnMobs();
+                }
+
+            }
+        }.runTaskTimer(plugin, 0, 10 * 20);
     }
 
     private boolean createDatabaseTables() {
-        return sql.createTableRegions();
+        if(!sql.createTableRegions()) return false;
+        if(!sql.createTableMobSpawnRegion()) return false;
+        return sql.createTableSpawnSystemMobController();
 
     }
     private void registerListener() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(new ListenerPlayerInteract(logger, messagesConfig), plugin);
-        pluginManager.registerEvents(new ListenerPlayerMove(logger, messagesConfig, sql), plugin);
+        pluginManager.registerEvents(new ListenerPlayerMove(logger, messagesConfig, sql, dbHandlerCustomMobs, plugin), plugin);
+        pluginManager.registerEvents(new ListenerInvClick(logger), plugin);
+        pluginManager.registerEvents(new ListenerInvClose(logger), plugin);
+        pluginManager.registerEvents(new ListenerPlayerChat(logger), plugin);
     }
     private void registerCommands() {
-        plugin.getCommand("marsregion").setExecutor(new CommandMarsRegion(logger, plugin, messagesConfig, sql));
+        plugin.getCommand("marsregion").setExecutor(new CommandMarsRegion(logger, plugin, messagesConfig, sql, dbHandlerCustomMobs));
     }
 
     @Override
@@ -148,5 +181,24 @@ public class ModuleRegions implements IModule {
     public static void setSetups(Map<UUID, ISetup> setups) { ModuleRegions.setups = setups; }
     public static void addSetup(UUID key, ISetup value) { setups.put(key, value); }
     public static void removeSetup(UUID key) { setups.remove(key); }
+
+    public static Map<UUID, IGuiInventory> getInvs() { return invs; }
+    public static void setInvs(Map<UUID, IGuiInventory> invs) { ModuleRegions.invs = invs; }
+    public static void addInv(UUID key, IGuiInventory value) { invs.put(key, value); }
+    public static void removeInv(UUID key) { invs.remove(key); }
+
+    public static List<MobSpawnRegion> getActiveSpawnRegions() {
+        return activeSpawnRegions;
+    }
+
+    public static void addActiveMobSpawnRegion(MobSpawnRegion mobSpawnRegion) {
+        activeSpawnRegions.add(mobSpawnRegion);
+    }
+    public static void removeActiveMobSpawnRegion(MobSpawnRegion mobSpawnRegion) {
+        for(int i = 0; i < activeSpawnRegions.size(); i++) {
+            MobSpawnRegion region = activeSpawnRegions.get(i);
+            if(region.getId() == mobSpawnRegion.getId()) activeSpawnRegions.remove(i);
+        }
+    }
 
 }

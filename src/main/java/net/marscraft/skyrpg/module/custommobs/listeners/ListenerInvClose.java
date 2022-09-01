@@ -7,6 +7,7 @@ import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.inventory.editinventory.InvEditItems;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
+import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,11 @@ public class ListenerInvClose implements Listener {
         String invTitle = event.getView().getTitle();
         if(invTitle.equalsIgnoreCase(InvEditItems.title)) {
             ModuleCustomMobs.removeSetup(player.getUniqueId());
+        }
+        //Experimental
+        if(ModuleCustomMobs.getSetups().containsKey(player.getUniqueId())) {
+            ISetup setup = ModuleCustomMobs.getSetups().get(player.getUniqueId());
+            if(setup.setupComplete()) ModuleCustomMobs.removeSetup(player.getUniqueId());
         }
     }
 

@@ -9,8 +9,8 @@ public enum ItemRarity {
     EINZIGARTIG("§cEinzigartig", 5)
     ;
 
-    private String displayName;
-    private int id;
+    private final String displayName;
+    private final int id;
 
     ItemRarity(String displayName, int id) {
         this.displayName = displayName;

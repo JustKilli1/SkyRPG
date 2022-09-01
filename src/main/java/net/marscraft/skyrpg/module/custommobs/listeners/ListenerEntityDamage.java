@@ -36,12 +36,19 @@ public class ListenerEntityDamage implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         Entity rawEntity = event.getEntity();
         NamespacedKey keyCustomMob = new NamespacedKey(Main.getPlugin(Main.class), "customMob");
+        NamespacedKey keyCustomMobScaledHealth = new NamespacedKey(Main.getPlugin(Main.class), "scaledHealth");
+        NamespacedKey keyCustomMobLevel = new NamespacedKey(Main.getPlugin(Main.class), "Level");
 
         if(!rawEntity.getPersistentDataContainer().has(keyCustomMob, PersistentDataType.INTEGER)) return;
 
         int mobId = rawEntity.getPersistentDataContainer().get(keyCustomMob, PersistentDataType.INTEGER);
         MobHostile mobHostile = dbHandler.getHostileMobById(mobId);
         if(mobHostile == null) return;
+        if(!rawEntity.getPersistentDataContainer().has(keyCustomMobScaledHealth, PersistentDataType.DOUBLE) && !rawEntity.getPersistentDataContainer().has(keyCustomMobLevel, PersistentDataType.INTEGER)) return;
+        double scaledHealth = rawEntity.getPersistentDataContainer().get(keyCustomMobScaledHealth, PersistentDataType.DOUBLE);
+        int mobLevel = rawEntity.getPersistentDataContainer().get(keyCustomMobLevel, PersistentDataType.INTEGER);
+        mobHostile.setScaledHealth(scaledHealth);
+        mobHostile.setMobLevel(mobLevel);
         if(rawEntity.isDead()) {
             rawEntity = mobHostile.setCurrentHealth(rawEntity, 0);
             mobHostile.tryDropLoot(rawEntity.getLocation());

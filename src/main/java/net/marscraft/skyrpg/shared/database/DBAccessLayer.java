@@ -69,8 +69,7 @@ public class DBAccessLayer {
             Connection connection = mySql.getConnection();
             try {
                 PreparedStatement ps = connection.prepareStatement(sqlQuery);
-                ResultSet rs = ps.executeQuery();
-                return rs;
+                return ps.executeQuery();
             } catch (SQLException e) {
                 logger.error(e);
                 return null;

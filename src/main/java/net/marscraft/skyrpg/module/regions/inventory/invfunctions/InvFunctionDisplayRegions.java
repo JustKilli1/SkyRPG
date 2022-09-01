@@ -39,13 +39,12 @@ public class InvFunctionDisplayRegions extends InvFunction {
             invContents[i] = getRegionDisplayItem(regions.get(x));
         }
         inv.setContents(invContents);
-        logger.error("Geklappt");
         return inv;
     }
 
     private ItemStack getRegionDisplayItem(Region region) {
         NamespacedKey regionId = new NamespacedKey(Main.getPlugin(Main.class), "regionId");
-        ItemStack displayItem = new ItemBuilder(Material.MAP)
+        return new ItemBuilder(Material.MAP)
                 .setDisplayname("§c" + region.getName())
                 .setLore(
                         "§aWelt: §c" + region.getBound().getLoc1().getWorld().getName(),
@@ -62,8 +61,8 @@ public class InvFunctionDisplayRegions extends InvFunction {
                 .addPersistantDataToItemStack(regionId, region.getId())
                 .build()
                 ;
-        return displayItem;
     }
+
 
 
 

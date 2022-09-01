@@ -114,10 +114,9 @@ public class Utils {
      * */
     public static boolean enoughSpaceInInv(Inventory inv, int neededSpace) {
         ItemStack[] invContents = inv.getContents();
-        for(int i = 0; i < invContents.length; i++) {
-            if(neededSpace == 0) return true;
-            ItemStack invContent = invContents[i];
-            if(invContent == null || invContent.getType() == Material.AIR) neededSpace--;
+        for (ItemStack content : invContents) {
+            if (neededSpace == 0) return true;
+            if (content == null || content.getType() == Material.AIR) neededSpace--;
         }
         return false;
     }
@@ -131,17 +130,14 @@ public class Utils {
     public static Location locationFromStr(String locationAsStr) {
         String[] locationSplit = locationAsStr.split(",");
         if(locationSplit.length != 6) return null;
-
-
-        Location loc = new Location(
-                                    Bukkit.getWorld(locationSplit[0]),
-                                    doubleFromStr(locationSplit[1]),
-                                    doubleFromStr(locationSplit[2]),
-                                    doubleFromStr(locationSplit[3]),
-                                    floatFromStr(locationSplit[4]),
-                                    floatFromStr(locationSplit[5])
+        return new Location(
+                Bukkit.getWorld(locationSplit[0]),
+                doubleFromStr(locationSplit[1]),
+                doubleFromStr(locationSplit[2]),
+                doubleFromStr(locationSplit[3]),
+                floatFromStr(locationSplit[4]),
+                floatFromStr(locationSplit[5])
         );
-        return loc;
     }
 
     /**

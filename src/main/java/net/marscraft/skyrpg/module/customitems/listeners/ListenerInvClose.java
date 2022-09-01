@@ -2,11 +2,8 @@ package net.marscraft.skyrpg.module.customitems.listeners;
 
 import net.marscraft.skyrpg.module.customitems.MessagesCustomItems;
 import net.marscraft.skyrpg.module.customitems.ModuleCustomItems;
-import net.marscraft.skyrpg.module.customitems.inventory.InvGetItemType;
-import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
-import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.entity.Player;
@@ -36,9 +33,6 @@ public class ListenerInvClose implements Listener {
         if (ModuleCustomItems.getSetups().containsKey(player.getUniqueId())) {
             ISetup setup = ModuleCustomItems.getSetups().get(player.getUniqueId());
             setup.handleEvents(eventStorage);
-            return;
         }
     }
-
-
 }

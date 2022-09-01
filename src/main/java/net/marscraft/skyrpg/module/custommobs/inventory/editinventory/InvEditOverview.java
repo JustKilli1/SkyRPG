@@ -49,8 +49,7 @@ public class InvEditOverview extends MarsInventory implements IGuiInventory {
 
         Inventory inv = buildBaseInventory(title, 6);
         InvFunctionShowMobOverview mobOverview = new InvFunctionShowMobOverview(logger, dbHandler, 0, 44);
-        Inventory newInv = mobOverview.add(inv, active);
-        return newInv;
+        return mobOverview.add(inv, active);
     }
 
     @Override
@@ -98,7 +97,6 @@ public class InvEditOverview extends MarsInventory implements IGuiInventory {
             boolean active = filterName.equalsIgnoreCase("Active") ? true : false;
             IGuiInventory guiInv = getInventory(event.getView().getTitle(), active);
             guiInv.open(player);
-            return;
         }
 
 
