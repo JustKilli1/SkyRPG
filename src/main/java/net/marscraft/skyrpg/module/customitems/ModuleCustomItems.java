@@ -8,8 +8,6 @@ import net.marscraft.skyrpg.module.customitems.commands.CommandMarsItem;
 import net.marscraft.skyrpg.module.customitems.database.DBAccesLayerCustomItems;
 import net.marscraft.skyrpg.module.customitems.database.DBHandlerCustomItems;
 import net.marscraft.skyrpg.module.customitems.listeners.ListenerInvClose;
-import net.marscraft.skyrpg.module.custommobs.commands.CommandSpawnCustomMob;
-import net.marscraft.skyrpg.module.custommobs.listeners.ListenerEntityDamage;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;

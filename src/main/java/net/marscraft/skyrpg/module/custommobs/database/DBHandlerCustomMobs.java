@@ -49,8 +49,8 @@ public class DBHandlerCustomMobs extends DBHandler {
         try {
             if (rs == null) return null;
             if (!rs.next()) return null;
-            MobHostile hostileMob = getHostileMob(rs);
-            return hostileMob;
+
+            return getHostileMob(rs);
         } catch (Exception ex) {
             logger.error(ex);
             return null;

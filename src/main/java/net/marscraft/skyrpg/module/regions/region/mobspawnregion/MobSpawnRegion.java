@@ -1,7 +1,6 @@
 package net.marscraft.skyrpg.module.regions.region.mobspawnregion;
 
 import net.marscraft.skyrpg.base.Main;
-import net.marscraft.skyrpg.module.custommobs.mobs.MobHandler;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.module.regions.ModuleRegions;
 import net.marscraft.skyrpg.module.regions.region.Region;
@@ -11,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,14 +17,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MobSpawnRegion {
 
     private final ILogManager logger;
-    private int id;
-    private Region region;
+    private final int id;
+    private final Region region;
     private int maxMobs;
-    private Map<MobHostile, MobCharacteristics> mobs;
-    private List<Entity> spawnedMobs = new ArrayList<>();
+    private final Map<MobHostile, MobCharacteristics> mobs;
+    private final List<Entity> spawnedMobs = new ArrayList<>();
     private boolean active;
 
-    private Main plugin;
+    private final Main plugin;
 
     public MobSpawnRegion(ILogManager logger, int id, Region region, int maxMobs, Map<MobHostile, MobCharacteristics> mobs, boolean active, Main plugin) {
         this.logger = logger;
@@ -86,16 +84,15 @@ public class MobSpawnRegion {
         //x1: loc1x = 10
         //x2: -10
 
-        int x1 = loc1X > loc2X ? loc1X : loc2X;
-        int x2 = loc1X > loc2X ? loc2X : loc1X;
+        int x1 = Math.max(loc1X, loc2X);
+        int x2 = Math.min(loc1X, loc2X);
         int randomX = ThreadLocalRandom.current().nextInt(x2, x1 + 1);
 
-        int z1 = loc1Z > loc2Z ? loc1Z : loc2Z;
-        int z2 = loc1Z > loc2Z ? loc2Z : loc1Z;
+        int z1 = Math.max(loc1Z, loc2Z);
+        int z2 = Math.min(loc1Z, loc2Z);
         int randomZ = ThreadLocalRandom.current().nextInt(z2, z1 + 1);
         Block block = loc1.getWorld().getHighestBlockAt(randomX, randomZ);
-        Location randomLoc = block.getLocation().clone().add(0, 1, 0);
-        return randomLoc;
+        return block.getLocation().clone().add(0, 1, 0);
     }
 
     private MobHostile getSpawningMob() {
@@ -144,7 +141,7 @@ public class MobSpawnRegion {
     }
 
     public void setActive(boolean active) {
-        if(active == false) ModuleRegions.removeActiveMobSpawnRegion(this);
+        if(!active) ModuleRegions.removeActiveMobSpawnRegion(this);
         else ModuleRegions.addActiveMobSpawnRegion(this);
         this.active = active;
     }

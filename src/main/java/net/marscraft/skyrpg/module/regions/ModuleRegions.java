@@ -6,7 +6,6 @@ import net.marscraft.skyrpg.module.ModuleMode;
 import net.marscraft.skyrpg.module.ModuleState;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
 import net.marscraft.skyrpg.module.regions.commands.CommandMarsRegion;
 import net.marscraft.skyrpg.module.regions.database.DBAccessLayerRegions;
 import net.marscraft.skyrpg.module.regions.database.DBHandlerRegions;
@@ -18,19 +17,14 @@ import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.logmanager.LogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static net.marscraft.skyrpg.module.ModuleMode.*;
 import static net.marscraft.skyrpg.module.ModuleState.*;
-import static net.marscraft.skyrpg.module.ModuleState.ACTIVE;
 
 public class ModuleRegions implements IModule {
     private static final String moduleName = "Regions";
@@ -97,9 +91,7 @@ public class ModuleRegions implements IModule {
 
     private boolean initializeMobSpawnRegions() {
         List<MobSpawnRegion> mobSpawnRegions = dbHandler.getAllMobSpawnRegions(true);
-        for(MobSpawnRegion region : mobSpawnRegions) {
-            activeSpawnRegions.add(region);
-        }
+        activeSpawnRegions.addAll(mobSpawnRegions);
         return true;
     }
 

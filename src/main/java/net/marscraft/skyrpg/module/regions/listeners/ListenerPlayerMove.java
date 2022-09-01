@@ -10,7 +10,6 @@ import net.marscraft.skyrpg.module.regions.region.mobspawnregion.MobSpawnRegion;
 import net.marscraft.skyrpg.shared.configmanager.IConfigManager;
 import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.messagemanager.MessageManager;
-import net.marscraft.skyrpg.module.regions.region.Region;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,8 +66,8 @@ public class ListenerPlayerMove implements Listener {
             if(value.getLevelMin() < minLevel) minLevel = value.getLevelMin();
             if(value.getLevelMax() > maxLevel) maxLevel = value.getLevelMax();
         }
-        String result = minLevel + "-" + maxLevel;
-        return result;
+
+        return minLevel + "-" + maxLevel;
     }
 
 }

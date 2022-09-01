@@ -11,7 +11,7 @@ public enum ItemType {
 
     ;
 
-    private String displayName;
+    private final String displayName;
 
     ItemType(String displayName) {
         this.displayName = displayName;

@@ -156,8 +156,6 @@ public class InvEditMobDetails extends MarsInventory implements IGuiInventory {
                 default:
                     break;
             }
-
-            return;
         }
     }
 

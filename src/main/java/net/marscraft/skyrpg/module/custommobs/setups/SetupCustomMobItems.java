@@ -1,13 +1,11 @@
 package net.marscraft.skyrpg.module.custommobs.setups;
 
 import net.marscraft.skyrpg.module.custommobs.MessagesCustomMobs;
-import net.marscraft.skyrpg.module.custommobs.ModuleCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBAccessLayerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.database.DBHandlerCustomMobs;
 import net.marscraft.skyrpg.module.custommobs.inventory.editinventory.InvEditItems;
 import net.marscraft.skyrpg.module.custommobs.inventory.editinventory.InvEditOverview;
 import net.marscraft.skyrpg.module.custommobs.mobs.MobHostile;
-import net.marscraft.skyrpg.shared.Utils;
 import net.marscraft.skyrpg.shared.events.EventStorage;
 import net.marscraft.skyrpg.shared.inventory.IGuiInventory;
 import net.marscraft.skyrpg.shared.inventory.invfunctions.InvFunctionGoBack;
@@ -15,7 +13,6 @@ import net.marscraft.skyrpg.shared.logmanager.ILogManager;
 import net.marscraft.skyrpg.shared.setups.ISetup;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class SetupCustomMobItems implements ISetup {
 

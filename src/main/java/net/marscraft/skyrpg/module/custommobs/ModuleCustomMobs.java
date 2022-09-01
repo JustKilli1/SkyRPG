@@ -21,8 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 import static net.marscraft.skyrpg.module.ModuleMode.*;
-import static net.marscraft.skyrpg.module.ModuleMode.DEBUG;
-import static net.marscraft.skyrpg.module.ModuleMode.MAINTENANCE;
 import static net.marscraft.skyrpg.module.ModuleState.*;
 
 public class ModuleCustomMobs implements IModule {
@@ -140,7 +138,7 @@ public class ModuleCustomMobs implements IModule {
                     ticksLeft--;
                     ListenerEntityDamage.indicators.put(stand, ticksLeft);
                 }
-                stands.removeAll(removal);
+                removal.forEach(stands::remove);
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
